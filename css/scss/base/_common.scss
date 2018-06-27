@@ -1,0 +1,29 @@
+@charset "utf-8";
+
+/*!  
+*   COMMON STYLE
+*/
+
+::-moz-selection { 
+    background-color: #ffecaf; 
+}
+
+::selection {
+    background-color: #ffecaf; 
+}
+
+.noScroll {
+    height: 100%;
+    overflow: hidden;
+
+    .header {
+        position: fixed;
+    }
+    .header-container {
+        margin-right: 15px;
+    }
+}
+
+small.del {
+	text-decoration: line-through;
+}

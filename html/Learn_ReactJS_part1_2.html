@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Learn ReactJS: Part I</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/styles/atelier-savanna-light.min.css">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body>
+
+<article class="article article-type-2"> 
+
+<h1>[2] React Components</h1>
+
+<h2>1. Hello World, Part II... THE COMPONENT</h2>
+<p>React applications are made out of <em>components</em>.<br>What's a component?</p>
+<p>A component is a small, reusable chunk of code that is responsible for one job. That job is often to render some HTML.<br>Take a look at the code below. This code will create and render a new React component:</p>
+<pre><code>import React from 'react';
+import ReactDOM from 'react-dom';
+
+class MyComponentClass extends React.Component {
+  render() {
+    return &lt;h1>Hello world&lt;/h1>;
+  }
+};
+
+ReactDOM.render(
+  &lt;sMyComponentClass />,
+  document.getElementById('app')
+);</code></pre>
+<p>A lot of that code is probably unfamiliar. However you can recognize some JSX in there, as well as <mark>ReactDOM.render()</mark>.<br>We are going to unpack that code, one small piece at a time. By the end of this lesson, you'll understand how to build a React component!</p>
+
+<hr>
+
+<h2>2. Import React</h2>
+<p>Take a look at the code on line 1:</p>
+<pre><code>import React from 'react';</code></pre>
+<p>This line of code creates a new variable. That variable's name is <mark>React</mark>, and its value is a particular, imported JavaScript object:</p>
+<pre><code>// create a variable named React:
+import React from 'react';
+// evaluate this variable and get a particular, imported JavaScript object:
+React // { imported object properties here... }</code></pre>
+<p>This imported object contains methods that you need in order to use React. The object is called the React <em>library</em>.<br>Later, we'll go over where the React library is imported from, and how the importing process works. For now, just know that you get the React library via <mark>import React from 'react';</mark>.</p>
+<p>You've already seen one of the methods contained in the React library: <mark>React.createElement()</mark>. Recall that when a JSX element is <em>compiled</em>, it transforms into a <mark>React.createElement()</mark> call.</p>
+<p>For this reason, you <em>have to</em> import the React library, and save it in a variable named <mark>React</mark>, before you can use any JSX at all. <mark>React.createElement()</mark> must be available in order for JSX to work.</p>
+
+
+<hr>
+
+<h2>3. Import ReactDOM</h2>
+<p>Now take a look at the code on line 1 and line 2:</p>
+<pre><code>import React from 'react';
+import ReactDOM from 'react-dom';</code></pre>
+<p>Lines 1 and 2 both import JavaScript objects. In both lines, the imported object contains React-related methods.<br>However, there is a difference!</p>
+<p>The methods imported from <mark>'react-dom'</mark> are meant for interacting with the DOM. You are already familiar with one of them: <mark>ReactDOM.render()</mark>.<br>The methods imported from <mark>'react'</mark> don't deal with the DOM at all. They don't engage directly with anything that isn't part of React.</p>
+<p>To clarify: the DOM is <em>used</em> in React applications, but it isn't <em>part</em> of React. After all, the DOM is also used in countless non-React applications. Methods imported from <mark>'react'</mark> are only for pure React purposes, such as creating components or writing JSX elements.</p>
+
+<hr>
+
+
+<h2>4. Create a Component Class</h2>
+<p>You've learned that a <em>React component</em> is a small, reusable chunk of code that is responsible for one job, which often involves rendering HTML.
+<br>
+Here's another fact about components: every component must come from a <em>component class</em>.</p>
+<p>A <em>component class</em> is like a factory that creates components. If you have a <em>component class</em>, then you can use that class to produce as many components as you want.
+<br>
+To make a component class, you use a base class from the React library: <mark>React.Component</mark>.<br>What <em>is</em> <mark>React.Component</mark>, and how do you use it to make a component class?</p>
+<p><mark>React.Component</mark> is a JavaScript <em>class</em>. To create your own component class, you must <em>subclass</em> <mark>React.Component</mark>. You can do this by using the syntax <mark>class YourComponentNameGoesHere extends React.Component {}</mark>.<br>JavaScript classes and subclassing are a complex topic beyond the scope of this course. If you aren't comfortable with them, here are some good resources to consult: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes" target="_blank">1</a> <a href="https://hacks.mozilla.org/2015/07/es6-in-depth-classes/" target="_blank">2</a> <a href="https://hacks.mozilla.org/2015/08/es6-in-depth-subclassing/" target="_blank">3</a> <a href="http://exploringjs.com/es6/ch_classes.html" target="_blank">4</a>.</p>
+<pre><code>class MycomponentClass extends React.Component {
+  render() {
+    return &lt;h1>Hello world&lt;/h1>;
+  }
+}</code></pre>
+<p>you know that you are declaring a new <em>component class</em>, which is like a factory for building React components. You know that <mark>React.Component</mark> is a class, which you must subclass in order to create a component class of your own. You also know that <mark>React.Component</mark> is a property on the object which was returned by <mark>import React from 'react'</mark>.</p>
+
+
+<hr>
+
+
+<h2>5. Name a Component Class</h2>
+
+
+</article>
+
+</body>

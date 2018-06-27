@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SEO</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/styles/atelier-savanna-light.min.css">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body>
+
+<div class="article-header">
+  <div class="header-text">
+  	<h1>SEO 기법</h1>
+  <p class="date">2018. 06. 27</p>
+  </div>
+</div>
+
+
+<article class="article article-type-3"> 
+
+
+<h2>SEO란?</h2>
+<p>SEO는 Search Engine Optimization, 즉 '검색 엔진 최적화'를 말합니다. SEO를 잘 활용하면 적은 비용으로도 많은 트래픽을 얻을 수 있습니다. 한국에서는 네이버 검색률이 거의 압도적이지만, 크롬 보급이 활성회되면서 국내 구글 검색비율도 점차 올라가고 있습니다. 제 웹사이트[<a href="https://nykim.net" target="_blank">nykim.net</a>] 역시 구글 애널리틱스로 살펴보면 'google / organic'으로 접속한 경우가 60%였습니다.<br>그런고로, nykim.net의 유입률도 높일 겸(*중요*) 직무능력을 키우기 위해 SEO에 대해 공부해 봅시다.</p>
+<p>글의 출처는 다음과 같습니다:
+<ul class="list">
+	<li><small><a href="http://blog.ab180.co/google-seo-guide-part-one/" target="_blank">http://blog.ab180.co/google-seo-guide-part-one/</a></small></li>
+</ul>
+</p>
+
+<hr>
+
+
+<h2>네이버의 SEO</h2>
+<p>네이버는 사실 그다지 매력적인 SEO 대상은 아닙니다. 네이버 블로그나 카페를 운영하는 게 아니라면요! 하지만 그럼에도 불구하고 네이버에서 nykim.net에 접속한 이력은 있기 때문에(...) 고려 대상에 넣을 수는 있겠습니다.</p>
+<p>우선 네이버에서는 '<a href="https://webmastertool.naver.com/" target="_blank">웹마스터 도구</a>'라는 툴을 제공 중입니다. 네이버 아이디로 로그인 하면, 원하는 사이트를 간단 체크할 수 있습니다.</p>
+<div class="image" style="border:1px solid #ddd"><img src="images/seo_1_1.png" alt="image"/></div>
+<div class="image" style="border:1px solid #ddd"><img src="images/seo_1_2.png" alt="image"/></div>
+<p>또, 네이버 측에서 웹 표준 최적화 기본 가이드를 제공하고 있습니다(<a href="https://webmastertool.naver.com/guide/basic_optimize.naver#chapter1.1" target="_blank">링크</a>). 한 번 체크해 봅시다!</p>
+<p>
+<ol class="list">
+	<li>
+		<em>robots.txt 설정하기</em>
+		<div class="list-text">
+			<p>robots.txt 파일을 통해 검색 로봇의 접근을 허용/방지할 수 있습니다. <mark> User-agent: * </mark>로 지정하면 <i>모든 봇을 허용</i>합니다. <mark>Disallow: /path/</mark>는 관리자 페이지나 개인 정보 페이지 등에 접근해 수집하는 걸 막아줍니다. 참고로 네이버 검색 봇의 이름은 Yeti라고 하는군요.</p>
+			<div class="image border"><img src="images/seo_1_3.png" alt="image"></div>
+			<p>이 파일은 <i>root에 위치해야 합니다</i>. (ex: https://nykim.net/robots.txt)<br> 또, robots.txt에서 <i>sitemap.xml의 위치를 알릴 수 있습니다</i>.</p>
+		</div>
+	</li>
+	<li>
+		<em>사이트맵 만들기</em>
+		<div class="list-text">
+			<p>사이트맵은 사이트 내의 수집 대상 URL 목록을 담은 XML 형식의 파일로, 검색 봇이 보다 체계적으로 수집할 수 있게 도와줍니다.<br>어케 만드냐구요? 온라인 제너레이터가 있습니다. (<a href="http://www.web-site-map.com/">링크</a>). 놀라운 월드-와이드-웹이네요 XD</p>
+			<p>다운로드 받은 파일을 열어보니 알 수 없는 태그가 보입니다. <a href="https://www.sitemaps.org/ko/protocol.html" target="_blank">sitemaps.org</a>에서 각 태그가 어떤 역할을 하는지 알 수 있습니다. <br><mark>&lt;loc></mark>는 <i>페이지의 URL</i>인데요, nykim.net은 페이지가 두 개밖에 없으므로(...) 두 개만 뿅 나왔습니다. <br><mark>&lt;lastmod></mark>는 <i>파일을 마지막으로 수정한 날짜</i>를, <mark>&lt;changefreq></mark>는 <i>페이지가 변경되는 빈도</i>를 뜻합니다. 만약 새로운 게시물이 쏟아져나오는 커뮤니티 사이트라면 always겠지만, 제 경우는 그렇게 자주 페이지가 바뀌지 않으니 weekly나 monthly에 가깝겠죠. 물론 이 값은 '힌트'에 가까우며 '명령'이 아닙니다. 즉, hourly라고 지정해도 크롤러는 더 적은 빈도로 크롤링할 수도 있습니다.<br> <mark>&lt;priority></mark>는 <i>URL의 상대적 우선순위</i>입니다. 기본값은 0.5입니다. 저의 경우는 (아주 당연하게도) index.html 페이지가 about.html 보다 priority가 높습니다.</p>
+			<p>사이트맵 파일의 위치에 따라 해당 Sitemap에 포함될 수 있는 URL 집합이 결정됩니다. 잘 모르겠으면 그냥 루우트root에 짱박아놓읍시다 :9 <br>또, robots.txt에다 사이트맵 위치를 알려줄 수 있다고 했는데요, 요렇게 알려주면 됩니다: <mark>Sitemap: https://www.nykim.net/sitemap.xml</mark> 이 명령어는 user-agent 줄과는 무관하므로 파일의 어느 곳에나 배치할 수 있습니다.</p>
+			<p>사이트맵에 대해 구글이 좀 더 자세하게 설명해 주고 있습니다(<a href="https://support.google.com/webmasters/answer/183668?hl=ko" target="_blank">링크</a>).</p>
+		</div>
+	</li>
+</ol>
+
+
+</article>
+
+</body>
+</html>

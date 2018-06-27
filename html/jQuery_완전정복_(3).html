@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>jQuery</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/styles/atelier-savanna-light.min.css">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body>
+ 
+<article class="article"> 
+<h1>jQuery - 노드 다루기</h1>
+
+<h2>노드 찾기</h2>
+<p>jQuery에서는 id 이름, 태그 이름, 클래스 이름, 속성을 통해 노드를 찾을 수 있습니다. 이는 CSS의 셀렉팅과 거의 같습니다. 따라서 속성으로 노드를 찾는 것만 복습하고 넘어가죠 :9</p>
+<ul class="list">
+	<li>
+		<em>$("E[A]")</em>
+		<span>: 속성 A를 포함한 모든 E 노드 찾기</span>
+	</li>
+	<li>
+		<em>$("E[A=V]")</em>
+		<span>: 속성 A의 값이 V인 모든 E 노드 찾기</span>
+	</li>
+	<li>
+		<em>$("E[A^=V]")</em>
+		<span>: 속성 A의 값이 V로 시작하는 모든 E 노드 찾기</span>
+	</li>
+	<li>
+		<em>$("E[A$=V]")</em>
+		<span>: 속성 A의 값이 V로 끝나는 모든 E 노드 찾기</span>
+	</li>
+	<li>
+		<em>$("E[A*=V]")</em>
+		<span>: 속성 A의 값이 V를 포함하고 있는 모든 E 노드 찾기</span>
+	</li>
+</ul>
+
+<hr>
+
+<h2>찾은 노드 다루기</h2>
+<h3>$대상.length</h3>
+<p>length 프로퍼티를 이용하면 jQuery 객체 내부에 들어있는 논드 개수를 구할 수 있습니다.</p>
+
+<h3>$대상.eq(index)</h3>
+<p>eq() 메서드를 이용하면 찾은 노드의 n번째에 해당하는 노드에 접근할 수 있습니다.</p>
+<pre><code>&lt;ul>
+    &lt;li>myLi&lt;/li>
+    &lt;li>myLi&lt;/li>
+    &lt;li>myLi&lt;/li>
+    &lt;li>myLi&lt;/li>
+&lt;/ul>
+
+var $liList = $("ul li");
+var $li_1 = $liList.eq(1);</code></pre>
+<p>위 코드를 보면 HTML 문서에 li 태그가 4개이기 때문에, $liList의 jQuery 객체에는 HTMLLiElement DOM 객체가 4개 들어있습니다. 이때 <mark>$liList.eq(1)</mark>이 실행되면 $liList에 저장되어 있는 jQuery 객체 내부의 HTMLLiElement 객체 중 1번째 객체를 포함하는 새로운 jQuery 객체가 생성됩니다. 이 값이 $li_1 변수에 저장되는 거죠.</p>
+<h3>$대상.get(index)</h3>
+<p>만약 jQuery 내부에 들어있는 자바스크립트 DOM객체에 직접 접근하고 싶다면 <mark>.get()</mark> 메서드를 사용하면 됩니다.</p>
+<pre><code>var $liList = $("ul li");
+var li_1 = $liList.get(1);
+
+li_1.style.border="1px solid #333";</code></pre>
+<p>위 코드에서 li_1에는 $가 붙지 않았는데 이는 jQuery 객체가 아니기 때문입니다. 즉, 자바스크립트 DOM 객체인 거죠. 한편 다음과 같이 []를 사용해서 접근하는 것도 가능합니다.</p>
+<pre><code>var $liList = $("ul li");
+var li_1 = $liList[1];
+
+li_1.style.border="1px solid #333";</code></pre>
+<h3>$대상.each()</h3>
+<p><mark>each()</mark> 메서드는, $대상에 들어있는 노드 개수만큼 매개변수 값으로 넘겨 받은 함수를 반복해서 호출해 줍니다.</p>
+<pre><code>$("ul.menu li").each(function(index){
+	console.log(this);
+	$(this).addClass("on");
+});</code></pre>
+<p>위 코드의 익명함수 내부의 this는 뭘 의미할까요? 이는 $("ul.menu li")라는 jQuery 객체 내부에 들어있는 <i>index 번째에 해당하는 자바스크립트 DOM</i>을 의미합니다.<br>그럼 $(this)는 뭐가 다를까요? 앞서 살펴본 것처럼 $는 jQuery 함수이며, 매개변수로 받은 태그 노드 정보를 파싱해 태그와 1:! 대응하는 HTMLElement 객체를 jQuery 객체로 포장해 <1></1>리턴한다고 배웠습니다. 즉, $(this)는 this를 jQuery 객체로 만든 것 뿐입니다. 왜냐면 우린 이걸 가지고 addClass() 등의 메서드를 쓸 건데, 이건 일반 자바스크립트 DOM에는 없는 기능이잖아요? 따라서 $() 함수를 이용해 일반 자바스크립트 DOM 객체를 감싼 jQuery의 인스턴스로 만들어 addClass() 같은 메서드를 사용해야 합니다. 일종의 형변환 같은 거죠. 정리하자면 $(this)는 <em>this라는 DOM 객체를 쉽게 다루기 위해 this를 jQuery 객체로 만든 것</em>입니다.</p>
+
+<h3>$대상.filter("선택자")</h3>
+<p>찾은 노드 중에서 특정 노드만을 걸러내고 싶을 땐 filter() 메서드를 사용합니다. 이때, filter() 메서드가 찾는 대상은 오직 현재 찾은 노드이며, 현재 찾은 노드의 자손이나 부모는 포함하지 않습니다.</p>
+<pre><code>$("ul.menu li").filter(".on").css("border", "3px solid #f00");</code></pre>
+
+<h3>$대상.find("선택자") / $대상.children("선택자")</h3>
+<p>찾은 노드의 자식(자손 포함) 노드 중에서 특정 노드를 찾고 싶을 때 find() 메서드를 사용합니다. 만약 자식 노드에서만 찾고 싶다면 children() 메서드를 사용합니다.</p>
+
+<h3>$대상.index() / $목록.index($대상)</h3>	
+<pre><code>$("ul.menu li").click(function(){
+	alert( $(this).index() );
+});</code></pre>
+<p>위 코드처럼 index() 메서드를 사용하면 노드가 위치한 인덱스 값을 쉽게 알 수 있습니다. 앞에서도 알아본 것처럼 이벤트 리스터 내부의 this는 클릭 이베트를 발생시킨 자바스크립트 DOM 객체인데, 이 객체는 클릭한 노드의 인덱스 값을 알아내는 기능이 없습니다. 따라서 인덱스 값을 쉽게 알 수 있는 index() 메서드를 쓰고자 $(this) 구문을 사용한 것입니다.<br/> 하나 더, index()메서드를 사용할할 때는 주의할 점이 있습니다.</p>
+<pre><code>$("ul.menu li a").click(function(){
+	alert( $(this).index() );
+});</code></pre>
+<p>위 예제의 결과물은 $("ul.menu li a")가 몇 개이든 무조건 index가 0이 나옵니다. 그 이유는 a가 연속해서 위치한 것이 아니라 li*4 > a 와 같이 각 li에 하나씩 있기 때문입니다. 따라서 무조건 index 0이 나올 수밖에 없습니다. 이럴 때는 <mark>$목록.index($대상)</mark>과 같이 사용해야 합니다.</p>
+<pre><code>var $menuLink = $("ul.menu li a");
+$menuLink.click(function(){
+	alert( $$menuLink.index(this) );
+});</code></pre>
+<p>즉, &lt;a> 태그 객체를 갖고 있는 jQuery 객체에게 클릭한 DOM 객체가 몇 번째 인덱스인지 물어보면 된는 거죠. 참고로 this 대신 $(this)를 써도 됩니다 :-9</p>
+</article>
+
+</body>
+</html>

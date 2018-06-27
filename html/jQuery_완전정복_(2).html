@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>jQuery</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/styles/atelier-savanna-light.min.css">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body>
+ 
+<article class="article"> 
+<h1>jQuery 소개</h1>
+
+<h2>jQuery의 정체</h2>
+<h3>$()의 의미</h3>
+<p>jQuery에서 가장 많이 사용하는 기능은 $()입니다. 이건 대체 무엇을 의미할까요?<br>얘는 그냥 <i>이름이 $인 함수를 호출한 것</i>입니다. 우리가 어떤 함수를 호출할 때 <mark>함수이름()</mark>과 같이 쓰는 것처럼, <mark>제이쿼리()</mark>하고 호출하는 게 됩니다.<br>jQuery 라이브러리 내부에 이렇게 정의된 것을 확인할 수 있습니다.</p>
+<pre><code>window.jQuery = window.$ = jQuery;</code></pre>
+<p>결국 $는 jQuery를 줄여 말하는 것입니다. 따라서 다음 두 코드는 동일합니다.</p>
+<pre><code>$("div").css("color", "#f00");
+jQuery("div").css("color","#f00");</code></pre>
+<p>위 코드에서 <mark>$("div")</mark>는 <i>div를 매개변수 값으로 $()함수를 호출</i>한 것입니다.</p>
+
+<h3>$() 함수의 리턴값</h3>
+<pre><code>$("div").css("color", "#f00");</code></pre>
+<p>위 코드에서 점(.)은 무슨 역할을 할까요? 특정 객체에서 제공하는 기능에 접근할 때 쓰는 접근 연산자입니다. css()는 이 특정 객체에서 제공하는 기능(메서드) 중 하나입니다. 즉, $("div") 함수의 리턴값인 특정 객체가 바로 jQuery 객체라는 것입니다.<br>jQuery API를 살펴보면, jQuery 함수의 리턴값은 jQuery입니다. 결국 코드를 해석하자면, <em>$("div") 함수 호출 후 리턴된 jQuery 객체 내부의 css() 메서드를 .을 이용해 접근한 것</em>입니다. 이는 달리 말하면 jQuery 객체 내부에 없는 메서드는 호출할 수 없다는 뜻이 됩니다.</p>
+<p>예제를 봅시다. 다음 두 구문을 실행하면 어떤 결과가 나올까요?</p>
+<pre><code>//1번
+("div").css("font-size").addClass("on");
+
+//2번
+$("div").css("font-size", 12).addClass("on");</code></pre>
+<p>1번은 에러가 나고 2번은 정상 동작합니다. 이유는 jQuery API에서 찾아볼 수 있습니다. css() 메서드는 매개변수가 하나이면, CSS 프로퍼티를 문자열로 리턴합니다. 그런데 이 문자열(String 클래스)에는 addClass() 메서드가 존재하지 않죠! 따라서 에러가 납니다. 한편, 매개변수가 두 개면 jQuery 객체를 리턴하므로 jQuery의 기능인 addClass() 메서드가 정상 호출됩니다.</p>
+<div class="image"><img src="../images/jquery_2_1.png" alt="image"></div>
+<div class="image"><img src="../images/jquery_2_2.png" alt="image"></div>
+
+<h3>jQuery의 정체</h3>
+<p>jQuery는 자바스크립트의 prototype이라는 클래스 제작 문법으로 만들어졌습니다. jQuery를 prototype으로 간단히 표현하면 다음과 같습니다.</p>
+<pre><code>function jQuery(){
+}
+jQuery.prototype.css=function(){}
+jQuery.prototype.on=function(){}
+jQuery.prototype.addClass=function(){}
+jQuery.prototype.cick=function(){}
+...
+</code></pre>
+<p>함수를 사용하려면 호출해야하는 것처럼 클래스를 사용하려면 해당 클래스의 인스턴스를 생성해줘야 합니다.</p>
+<pre><code>var 인스턴스 이름 = new 클래스 이름();</code></pre>
+<p>읭?! 그런데 우린 jQuery 인스턴스를 생성한 적이 없는데요?? 그럼에도 불구하고 jQuery를  쓸 수 있는 건 $()에서 jQuery의 인스턴스를 제공해주기 때문입니다.</p>
+<pre><code>function $(){
+   ......
+   return new jQuery()
+}</code></pre>
+<p>이렇게 만들어진 jQuery 객체 내부에는 노드, 스타일 속성, 이벤트 등을 쉽게 다룰 수 있는 여러 기능들이 들어있습니다.</p>
+<p>그럼 이제 jQuery가 어떤 원리로 동작하는지 알아볼 차례입니다. 아래 예제를 봅시다.</p>
+<pre><code>&lt;body>
+	&lt;div>myDiv-1&lt;/div>
+	&lt;div>myDiv-2&lt;/div>
+	&lt;div>myDiv-3&lt;/div>
+	&lt;p>myP-1&lt;/p>
+	&lt;p>myP-2&lt;/p>
+	&lt;p>myP-3&lt;/p>
+&lt;/body>
+
+var $divs = $("div");
+$divs.css("border", "1px solid #333");</code></pre>
+<p>위 구문이 실행되면 jQuery 인스턴스는 몇 개 만들어질까요? 답은 1개입니다. <mark>var $divs = $("div")</mark>로 만들어진 jQuery 객체 내부에는 css(), clone(), offset() 등등의 다양한 메서드 뿐만 아니라 $("div")의 결과 정보인 자바스크립트 HTMLDivElement DOM객체가 포함되어 있습니다. jQuery 인스턴스는 하나지만 이 내부에는 $()함수를 활용해 찾은 3개의 div 태그 객체(정확히는 HTMLDivElement 객체)를 가지게 됩니다.<br>이때 css() 메서드를 호출하면 jQuery 내부의 프로퍼티로 갖고 있는 div 태그 객체를 for문 등의 반복문을 이용해 노드에 하나씩 접근해 스타일을 변경합니다. 바로 다음처럼요!</p>
+<pre><code>function css(){
+   ....
+   for (var i=0; i&lt;nodes.length i++){
+       nodes[i].style.color="#333333";
+   }
+   ....
+}</code></pre>
+<p>실제 스타일을 변경하는 기능은 jQuery가 아닌 jQuery 객체 내부에 있는 자바스크립트 DOM이 처리하는 것이죠. jQuery를 사용하는 우리는 루프를 돌리지 않지만 jQuery 내부에는 루프를 도는 로직이 들어 있기 때문에 가급적 <em>jQuery 기능 호출을 줄이는 것</em>을 추천합니다.</p>
+<pre><code>//비효율적
+$("#traget").show();
+$("#target").css("color","red");
+$("#traget").fadeOut();</code></pre>
+<pre><code>//최적화 (노드 캐싱)
+var $target = $("#target");
+$target.show();
+$target.css("color","red");
+$target.fadeOut();
+</code></pre>
+<p>마지막으로 배운 걸 정리해보죠! <mark>$("#header").css("background", "pink");</mark> 구문은 #header를 매개변수 값으로 jQuery 함수를 호출한 것입니다. $() 함수는 #header 노드를 감싼 jQuery 객체를 리턴해주고, 접근 연산자를 이용해 jQuery 객체에서 제공하는 스타일 변경 메서드인 css() 메서드를 호출합니다.<br>참고로 변수 앞에 $를 붙이는 경우가 있는데요, 이는 jQuery 인스턴스를 담는 변수임을 나타내기 위함입니다. 따라서 $가 붙은 변수를 보면, <i>jQuery 인스턴스가 담긴 변수니 jQuery 기능을 사용할 수 있다</i>고 인지하면 됩니다.</p>
+
+</article>
+
+</body>
+</html>

@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Learn ReactJS</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/styles/atelier-savanna-light.min.css">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body>
+
+<article class="article article-type-2"> 
+ 
+  <h1>[1] JSX</h1>
+  
+  <h2>1. What is JSX?</h2>
+  <pre><code>const h1 = &lt;h1>hello world&lt;/h1>;</code></pre>
+  <p>Does this code belong in a JavaScript file, an HTML file, or somewhere else?<br>
+		 The answer is...a JavaScript file! Despite what it looks like, your code doesn't actually contain any HTML at all.<br>
+		 The part that looks like HTML, &lt;h1>Hello world&lt;/h1>, is something called <em>JSX</em>.</p>
+	<p><em>JSX</em> is a syntax extension for JavaScript. It was written to be used with React. JSX code looks a lot like HTML.<br>
+What does "syntax extension" mean?<br>
+In this case, it means that JSX is not valid JavaScript. Web browsers can't read it!<br>
+If a JavaScript file contains JSX code, then that file will have to be <em>compiled</em>. That means that before the file reaches a web browser, a <i>JSX compiler</i> will translate any JSX into regular JavaScript.</p>
+
+<hr>
+
+<h2>2. JSX Elements</h2>
+<pre><code>&lt;h1>Hello world&lt;/h1></code></pre>
+<p>A basic unit of JSX is called a <em>JSX element</em>.<br>
+This JSX element looks exactly like HTML! The only noticeable difference is that you would find it in a JavaScript file, instead of in an HTML file.</p>
+<p>JSX elements are treated as JavaScript <em>expressions</em>. They can go anywhere that JavaScript expressions can go.<br>
+That means that a JSX element can be saved in a variable, passed to a function, stored in an object or array...you name it.<br>
+Here's an example of a JSX element being saved in a variable:</p>
+<pre><code>const navBar = &lt;nav>I am a nav bar&lt;/nav>;</code></pre>
+<p>Here's an example of several JSX elements being stored in an object:</p>
+<pre><code>const myTeam = {
+  center: &lt;li>Benzo Walli&lt;/li>,
+  powerForward: &lt;li>Rasha Loa&lt;/li>,
+  smallForward: &lt;li>Tayshaun Dasmoto&lt;/li>,
+  shootingGuard: &lt;li>Colmar Cumberbatch&lt;/li>,
+  pointGuard: &lt;li>Femi Billon&lt;/li>
+};</code></pre>
+
+<hr>
+
+<h2>3. Attributes In JSX</h2>
+<p>JSX elements can have <em>attributes</em>, just like HTML elements can.<br>
+A JSX attribute is written using HTML-like syntax: a <em>name</em>, followed by an equals sign, followed by a <em>value</em>. The <em>value</em> should be wrapped in quotes, like this:</p>
+<pre><code>my-attribute-name="my-attribute-value"</code></pre>
+<p>Here are some JSX elements with <em>attributes</em>:</p>
+<pre><code>&lt;a href="http://www.example.com">Welcome to the Web&lt;/a>;
+
+const title = &lt;h1 id="title">Introduction to React.js: Part I&lt;/h1></code></pre>
+<p>A single JSX element can have many attributes, just like in HTML:</p>
+<pre><code>const panda = &lt;img src="images/panda.jpg" alt="panda" width="500px" height="300px" />;</code></pre>
+
+<hr>
+
+<h2>4. Nested JSX</h2>
+<p>You can nest JSX elements inside of other JSX elements, just like in HTML.
+Here's an example of a JSX <mark>&lt;h1></mark> element, nested inside of a JSX <mark>&lt;a></mark> element:</p>
+<pre><code>&lt;a href="https://www.example.com">&lt;h1>Click me!&lt;/h1>&lt;/a></code></pre>
+<p>To make this more readable, you can use HTML-style line breaks and indentation:</p>
+<pre><code>&lt;a href="https://www.example.com">
+  &lt;h1>
+    Click me!
+  &lt;/h1>
+&lt;/a></code></pre>
+<p>If a JSX expression takes up more than one line, then you must wrap the multi-line JSX expression in <em>parentheses</em>. This looks strange at first, but you get used to it:</p>
+<pre><code>(
+  &lt;a href="https://www.example.com">
+    &lt;h1>
+      Click me!
+    &lt;/h1>
+  &lt;/a>
+)</code></pre>
+<p><em>Nested</em> JSX expressions can be saved as variables, passed to functions, etc., just like non-nested JSX expressions can! Here's an example of a nested JSX expression being saved as a variable:</p>
+<pre><code>const theExample = (
+   &lt;a href="https://www.example.com">
+     &lt;h1>
+       Click me!
+     &lt;/h1>
+   &lt;/a>
+);</code></pre>
+
+<hr>
+
+<h2>5. JSX Outer Elements</h2>
+<p>There's a rule that we haven't mentioned: a JSX expression must have exactly <em>one</em> outermost element.<br>
+In other words, this code will work:</p>
+<pre><code>const paragraphs = (
+   &lt;div id="i-am-the-outermost-element">
+     &lt;p>I am a paragraph.&lt;/p>
+     &lt;p>I, too, am a paragraph.&lt;/p>
+   &lt;/div>
+);</code></pre>
+<p>But this code will not work:</p>
+<pre><code>const paragraphs = (
+  &lt;p>I am a paragraph.&lt;/p> 
+  &lt;p>I, too, am a paragraph.&lt;/p>
+);</code></pre>
+<p>The <em>first opening</em> tag and the final <em>closing tag</em> of a JSX expression must belong to the same JSX element!
+It's easy to forget about this rule, and end up with errors that are tough to diagnose.
+If you notice that a JSX expression has multiple outer elements, the solution is usually simple: wrap the JSX expression in a <mark>&lt;div>&lt;/div></mark>.</p>
+
+<hr>
+
+<h2>6. Rendering JSX</h2>
+<p>You've learned how to write JSX elements! Now it's time to learn how to render them.<br>
+To render a JSX expression means to make it appear onscreen.</p>
+<p>The following code will render a JSX expression:</p>
+<pre><code>ReactDOM.render(&lt;h1>Hello world&lt;/h1>, document.getElementById('app'));</code></pre>
+<p>JavaScript is case-sensitive, so make sure to capitalize <em>ReactDOM</em> correctly!</p>
+<pre><code>import React from 'react';
+import ReactDom from 'react-dom';
+
+// code here:
+ReactDom.render(&lt;h1>Hello world&lt;/h1>, document.getElementById('app'));</code></pre>
+
+
+<hr>
+
+
+<h2>7. ReactDOM.render() I</h2>
+<p>Let's examine the code that you just wrote. <br>You can see something called <mark>ReactDOM</mark>. What's that?</p>
+<p><mark>ReactDOM</mark> is the name of a JavaScript library. This library contains several React-specific methods, all of which deal with <span class="bold color-red">the DOM</span> in some way or another.<br>We'll talk more later about how <mark>ReactDOM</mark> got into your file. For now, just understand that it's yours to use.</p>
+<p><mark>ReactDOM.render()</mark> is the most common way to <em>render</em> JSX. It takes a JSX expression, creates a corresponding tree of DOM nodes, and adds that tree to the DOM. That is the way to make a JSX expression appear onscreen.</p>
+<pre><code>import React from 'react';
+import ReactDom from 'react-dom';
+
+ReactDom.render(&lt;h1>Hello world&lt;/h1>, document.getElementById('app'));</code></pre>
+<p><mark>&lt;h1>Hello world&lt;/h1></mark> is the first argument being passed to ReactDOM.render(). <mark>ReactDOM.render()</mark>'s first argument should be a JSX expression, and it will be rendered to the screen.</p>
+
+
+<hr>
+
+<h2>8. ReactDOM.render() II</h2>
+<pre><code>document.getElementById('app')</code></pre>
+<p>You just learned that <mark>ReactDOM.render()</mark> makes its first argument appear onscreen. But <em>where</em> on the screen should that first argument appear?<br> The first argument is <em>appended</em> to whatever element is selected by the second argument.</p>
+<pre><code>&lt!-- html file -->
+&lt;body>
+  &lt;main id="app">&lt;/main>
+&lt;/body></code></pre>
+<p>See your html file. You can find an element that would be selected by <mark>document.getElementById('app')</mark>.<br> That element acted as a <em>container</em> for <mark>ReactDOM.render()</mark>'s first argument! At the end of the previous exercise, this appeared on the screen:</p>
+
+
+<hr>
+
+<h2>9. Passing a Variable to ReactDOM.render()</h2>
+<p><mark>ReactDOM.render()</mark>'s first argument should <em>evaluate</em> to a JSX expression, it doesn't have to literally <em>be</em> a JSX expression.<br>
+The first argument could also be a variable, so long as that variable evaluates to a JSX expression.</p>
+<p>In this example, we save a JSX expression as a <em>variable</em> named <mark>toDoList</mark>. We then pass toDoList as the first argument to <mark>ReactDOM.render()</mark>:</p>
+<pre><code>const toDoList = (
+  &lt;ol>
+     &lt;li>Learn React &lt;/li>
+     &lt;li>Become a Developer &lt;/li>
+   &lt;/ol>
+);
+
+ReactDOM.render(
+  toDoList, 
+  document.getElementById('app')
+);</code></pre>
+
+
+<hr>
+
+
+<h2>10. The Virtual DOM</h2>
+<p>One special thing about ReactDOM.render() is that it <em>only updates DOM elements that have changed</em>.<br>That means that if you render the exact same thing twice in a row, the second render will do nothing:</p>
+<pre><code>const hello = &lt;h1>Hello world&lt;/h1>;
+
+// This will add "Hello world" to the screen:
+ReactDOM.render(hello, document.getElementById('app'));
+
+// This won't do anything at all:
+ReactDOM.render(hello, document.getElementById('app'));
+</code></pre>
+<p>This is significant! Only updating the necessary DOM elements is a large part of what makes React so successful.</p>
+
+
+<hr>
+
+
+<h2>11. class vs className</h2>
+<p>Grammar in JSX is mostly the same as in HTML, but there are subtle differences to watch out for. Probably the most frequent of these involves the word <mark>class</mark>.<br>In HTML, it's common to use <mark>class</mark> as an attribute name:</p>
+<pre><code>&lt;h1 class="big">Hey&lt;/h1></code></pre>
+<p>In JSX, you can't use the word class! You have to use <mark>className</mark> instead:</p>
+<pre><code>&lt;h1 className="big">Hey&lt;/h1></code></pre>
+<p>This is because JSX gets translated into JavaScript, and <mark>class</mark> is a reserved word in JavaScript.
+<br>
+When JSX is rendered, JSX <mark>className</mark> attributes are automatically rendered as <mark>class</mark> attributes.</p>
+
+
+<hr>
+
+
+<h2>12. Self-Closing Tags</h2>
+<p>Another JSX 'gotcha' involves <em>self-closing tags</em>.</p>
+<p>What's a self-closing tag?<br>Most HTML elements use two tags: an opening tag (<mark>&lt;div></mark>), and a closing tag (<mark>&lt;/div></mark>). However, some HTML elements such as <mark>&lt;img></mark> and <mark>&lt;input></mark> use only one tag. The tag that belongs to a single-tag element isn't an opening tag nor a closing tag; it's a self-closing tag.</p>
+<p>When you write a self-closing tag in HTML, it is optional to include a forward-slash immediately before the final angle-bracket:</p>
+<pre><code>&lt;!-- Fine in HTML with a slash: -->
+&lt;br />
+
+&lt;!-- Also fine, without the slash: -->
+&lt;br>
+</code></pre>
+<p>But! <br>In JSX, you <em>have to</em> include the slash. If you write a self-closing tag in JSX and forget the slash, you will raise an error:</p>
+<pre><code>&lt;!-- Fine in JSX: -->
+&lt;br />
+
+&lt;!-- NOT FINE AT ALL in JSX: -->
+&lt;br>
+</code></pre>
+
+
+<hr>
+
+
+<h2>13. Curly Braces in JSX</h2>
+<p>So far, we've focused on writing JSX expressions. It's similar to writing bits of HTML, but inside of a JavaScript file.<br>Now we're going to add something new: regular JavaScript, written inside of a JSX expression, written inside of a JavaScript file.<br>Whoaaaa...</p>
+<pre><code>ReactDOM.render(
+  &lt;h1>2 + 3&lt;/h1>,
+  document.getElementById('app')
+);</code></pre>
+<p>What do you think will appear in the browser?<br>Instead of adding 2 and 3, it printed out "2 + 3" as a string of text. Why?<br>This happened because 2 + 3 is located in between <mark>&lt;h1></mark> and <mark>&lt;/h1></mark> tags.</p>
+<p>Any code in between the tags of a JSX element will be read as JSX, not as regular JavaScript! JSX doesn't add numbers - it reads them as text, just like HTML.</p>
+<p>You need a way to write code that says, "Even though I am located in between JSX tags, treat me like ordinary JavaScript and not like JSX."<br> You can do this by wrapping your code in <em>curly braces</em>.<br>The curly braces themselves won't be treated as JSX nor as JavaScript. They are markers that signal the beginning and end of a JavaScript injection into JSX, similar to the quotation marks that signal the boundaries of a string.</p>
+
+
+<hr>
+
+
+<h2>14. Variables in JSX</h2>
+<p>When you inject JavaScript into JSX, that JavaScript is part of the same environment as the rest of the JavaScript in your file. <br>That means that you can access variables while inside of a JSX expression, even if those variables were declared on the outside.</p>
+<pre><code>// Declare a variable:
+const name = 'nykim';
+
+// Access your variable 
+// from inside of a JSX expression:
+const greeting = &lt;p>Hello, {name}!&lt;/p>;</code></pre>
+
+<p>When writing JSX, it's common to use variables 
+<pre><code>// Use a variable to set the `height` and `width` attributes:
+
+const sideLength = "200px";
+
+const panda = (
+  &lt;img 
+    src="images/panda.jpg" 
+    alt="panda" 
+    height={sideLength} 
+    width={sideLength} />
+);</code></pre>
+
+<p>Notice how in this example, the <mark>&lt;img /></mark>'s attributes each get their own line. This can make your code more readable if you have a lot of attributes on one element.<br><em>Object properties</em> are also often used to set attributes:</p>
+<pre><code>const pics = {
+  panda: "http://bit.ly/1Tqltv5",
+  owl: "http://bit.ly/1XGtkM3",
+  owlCat: "http://bit.ly/1Upbczi"
+}; 
+
+const panda = (
+   &lt;img 
+    src={pics.panda} 
+    alt="Lazy Panda" />
+);
+
+const owl = (
+  &lt;img 
+    src={pics.owl} 
+    alt="Unimpressed Owl" />
+);
+
+const owlCat = (
+  &lt;img 
+    src={pics.owlCat} 
+    alt="Ghastly Abomination" />
+);</code></pre>
+
+
+<hr>
+
+
+<h2>15. Event Listeners in JSX</h2>
+<p>JSX elements can have <em>event listeners</em>, just like HTML elements can. Programming in React means constantly working with event listeners.<br>You create an event listener by giving a JSX element a special attribute. Here's an example:</p>
+<pre><code>&lt;img onClick={myFunc}/></code></pre>
+<p>An event listener attribute's <em>name</em> should be something like <mark>onClick</mark> or <mark>onMouseOver</mark>: the word <mark>on</mark>, plus the type of event that you're listening for. You can see a list of valid event names <a href="https://reactjs.org/docs/events.html#supported-events" target="_blank">here</a>.<br>An event listener attribute's <em>value</em> should be a function. The above example would only work if <mark>myFunc</mark> were a valid function that had been defined elsewhere:</p>
+<pre><code>function myFunc() {
+  alert('Make myFunc the pFunc... omg that was horrible i am so sorry');
+}
+
+&lt;img onClick={myFunc} /></code></pre>
+<p>Note that in HTML, event listener <em>names</em> are written in all lowercase, such as onclick or onmouseover. In JSX, event listener names are written in <em>camelCase</em>, such as <mark>onClick</mark> or <mark>onMouseOver</mark>.</p>
+
+
+<hr>
+
+
+<h2>16. JSX Conditionals: If Statements That Don't Work</h2>
+<p>Here's a rule that you need to know: you can not inject an if statement into a JSX expression.<br>This code will break:</p>
+<pre><code>(
+  &lt;h1>
+    {
+      if (purchase.complete) {
+        'Thank you for placing an order!'
+      }
+    }
+  &lt;/h1>
+)</code></pre>
+<p>The reason why has to do with the way that JSX is compiled. You don't need to understand the mechanics of it for now, but if you're interested then you can learn more <a href="https://reactjs.org/docs/jsx-in-depth.html" target="_blank">here</a>.</p>
+<p>What if you want a JSX expression to render, but only under certain circumstances? You can't inject an <mark>if</mark> statement. What can you do?<br>You have lots of options. In the next few lessons, we'll explore some simple ways to write conditionals (expressions that are only executed under certain conditions) in JSX.</p>
+
+
+<hr>
+
+<h2>17. JSX Conditionals: If Statements That Do Work</h2>
+<p>How can you write a conditional, if you can't inject an <mark>if</mark> statement into JSX?
+<br>
+Well, one option is to write an <mark>if</mark> statement, and not inject it into JSX.</p>
+<pre><code>let message;
+
+if (user.age >= drinkingAge) {
+  message = (
+    &lt;h1>
+      Hey, check out this alcoholic beverage!
+    &lt;/h1>
+  );
+} else {
+  message = (
+    &lt;h1>
+      Hey, check out these earrings I got at Claire's!
+    &lt;/h1>
+  );
+}
+
+ReactDOM.render(
+  message, 
+  document.getElementById('app')
+);</code></pre>
+<p>It works, because the words <mark>if</mark> and <mark>else</mark> are <em>not injected in</em> between JSX tags. The <mark>if</mark> statement is on the outside, and no JavaScript injection is necessary.<br>
+This is a common way to express conditionals in JSX.</p>
+
+
+<hr>
+
+
+<h2>18. JSX Conditionals: The Ternary Operator</h2>
+<p>There's a more compact way to write conditionals in JSX: the <em>ternary operator</em>.<br>The ternary operator works the same way in React as it does in regular JavaScript. However, it shows up in React surprisingly often.</p>
+<p>Recall how it works: you write <mark>x ? y : z</mark>, where x, y, and z are all JavaScript expressions. When your code is executed, <mark>x</mark> is evaluated as either "truthy" or "falsy." If <mark>x</mark> is truthy, then the entire ternary operator returns <mark>y</mark>. If <mark>x</mark> is falsy, then the entire ternary operator returns <mark>z</mark>. <a href="https://stackoverflow.com/questions/6259982/how-do-you-use-the-conditional-operator-in-javascript" target="_blank">Here's</a> a nice explanation if you need a refresher.</p>
+<p>Here's how you might use the ternary operator in a JSX expression:</p>
+<pre><code>const headline = (
+  &lt;h1>
+    { age >= drinkingAge ? 'Buy Drink' : 'Do Teen Stuff' }
+  &lt;/h1>
+);</code></pre>
+<p>And a more complicated example:</p>
+<pre><code>function coinToss () {
+  return Math.random() < 0.5 ? 'heads' : 'tails';
+}
+
+const pics = {
+	kitty: '../images/kitty.jpg',
+	puppy: '../images/puppy.jpg',
+};
+
+const img = &lt;img src={pics[coinToss() === 'heads' ? 'kitty' : 'puppy']} />;
+
+ReactDOM.render(
+	img,
+	document.getElementById('app')
+);
+</code></pre>
+
+
+<hr>
+
+<h2>19. JSX Conditionals: &amp;&amp;</h2>
+<p>We're going to cover one final way of writing conditionals in React: the <mark>&amp;&amp;</mark> operator.<br>Like the ternary operator, <mark>&amp;&amp;</mark> is not React-specific, but it shows up in React surprisingly often.</p>
+<p>In the last lesson, you wrote statements that would sometimes render a kitty and other times render a puppy. <mark>&amp;&amp;</mark>  would not have been the best choice for those lessons.
+<br>
+<mark>&amp;&amp;</mark> works best in conditionals that will sometimes do an action, but other times do nothing at all.</p>
+<p>Here's an example:</p>
+<pre><code>const tasty = (
+  &lt;ul>
+    &lt;li>Applesauce&lt;/li>
+    { !baby && &lt;li>Pizza&lt;/li> }
+    { age > 15 && &lt;li>Brussels Sprouts&lt;/li> }
+    { age > 20 && &lt;li>Oysters&lt;/li> }
+    { age > 25 && &lt;li>Grappa&lt;/li> }
+  &lt;/ul>
+);</code></pre>
+
+
+<hr>
+
+<h2>20. .map in JSX</h2>
+<p>The array method <mark>.map()</mark> comes up often in React. It's good to get in the habit of using it alongside JSX.
+<br>
+If you want to create a list of JSX elements, then <mark>.map()</mark> is often your best bet. It can look odd at first:</p>
+<pre><code>const strings = ['Home', 'Shop', 'About Me'];
+
+const listItems = strings.map(string => &lt;li>{string}&lt;/li>);
+
+&lt;ul>{listItems}&lt;/ul></code></pre>
+<p>In the above example, we start out with an array of strings. We call <mark>.map()</mark> on this array of strings, and the <mark>.map()</mark> call returns a new array of <mark>&lt;li></mark>s.<br>On the last line of the example, note that <mark>{listItems}</mark> will evaluate to an array, because it's the returned value of <mark>.map()</mark>! JSX <mark>&lt;li></mark>s don't have to be in an array like this, but they <em>can</em> be.</p>
+<pre><code>// This is fine in JSX, not in an explicit array:
+&lt;ul>
+  &lt;li>item 1&lt;/li>
+  &lt;li>item 2&lt;/li>
+  &lt;li>item 3&lt;/li>
+&lt;/ul>
+
+// This is also fine!
+const liArray = [
+  &lt;li>item 1&lt;/li>
+  &lt;li>item 2&lt;/li>
+  &lt;li>item 3&lt;/li>
+];
+
+&lt;ul>{liArray}&lt;/ul>
+</code></pre>
+<p>Here's another example:</p>
+<pre><code>const fruits = ['banana', 'orange', 'lemon'];
+
+const fruitsList = fruits.map(myFruit => &lt;li>{myFruit}&lt;/li>);
+
+ReactDOM.render(
+  &lt;ul>{fruitsList}&lt;/ul>,
+  document.getElementById('app')
+);</code></pre>
+  
+  
+<hr>
+
+
+<h2>21. Keys</h2>
+<p>When you make a list in JSX, sometimes your list will need to include something called <mark>keys</mark>:</p>
+<pre><code>&lt;ul>
+  &lt;li key="li-01">Example1&lt;/li>
+  &lt;li key="li-02">Example2&lt;/li>
+  &lt;li key="li-03">Example3&lt;/li>
+&lt;/ul></code></pre>
+<p>A <mark>key</mark> is a JSX attribute. The attribute's <em>name</em> is key. The attribute's <em>value</em> should be something unique, similar to an <mark>id</mark> attribute.
+<br>
+<mark>keys</mark> don't do anything that you can see! React uses them internally to keep track of lists. If you don't use keys when you're supposed to, React might accidentally scramble your list-items into the wrong order.</p>
+<p>Not all lists need to have <mark>keys</mark>. A list needs <mark>keys</mark> if either of the following are true:<br>
+1. The list-items have <em>memory</em> from one render to the next. For instance, when a to-do list renders, each item must "remember" whether it was checked off. The items shouldn't get amnesia when they render.<br>
+2. A list's order might be shuffled. For instance, a list of search results might be shuffled from one render to the next.<br>
+If neither of these conditions are true, then you don't have to worry about <mark>keys</mark>. If you aren't sure then it never hurts to use them!</p>
+<pre><code>const fruitsList = fruits.map(myFruit => &lt;li>{myFruit}&lt;/li>);</code></pre>
+<p>It's tme to give your <mark>&lt;li>&lt;li></mark> a <mark>key</mark> attribute. What should <mark>key</mark>'s <em>value</em> be?<br><mark>.map()</mark>is going to loop over your expressions, creating a new <mark>&lt;li>&lt;/li></mark>with a new <mark>key</mark> attribute on each loop. You need every <mark>key</mark> to b unique! How can you get <mark>.map()</mark> to produce a unique key, each time it loops?<br>First, add an <mark>i</mark> parameter to <mark>.map()</mark>'s inner function, so that you can access each fruit's unique index:</p>
+<pre><code>const fruitsList = fruits.map((myFruit, i) => &lt;li>{myFruit}&lt;/li>);</code></pre>
+<p>Now,  you can get a unique key on each loop, by adding the following attribute to your <mark>&lt;li>&lt;/li></mark>:</p>
+<pre><code>&lt;li key={'fruit_' + i}>&lt;/li></code></pre>
+
+<hr>
+
+
+<h2>22. React.createElement</h2>
+<p>You can write React code without using JSX at all!
+<br>
+The majority of React programmers do use JSX, and we will use it for the remainder of this tutorial, but you should understand that it is possible to write React code without it.
+</p>
+<p>The following JSX expression:</p>
+<pre><code>const h1 = &lt;h1>Hello world&lt;/h1>;</code></pre>
+<p>can be rewritten without JSX, like this:</p>
+<pre><code>const h1 = React.createElement(
+  "h1",
+  null,
+  "Hello world"
+);</code></pre>
+<p>When a JSX element is compiled, the compiler <em>transforms</em> the JSX element into the method that you see above: <mark>React.createElement()</mark>. Every JSX element is secretly a call to <mark>React.createElement()</mark>.<br>
+We won't go in-depth into how React.createElement() works, but you can start with the <a href="http://facebook.github.io/react/docs/top-level-api.html#react.createelement" target="_blank">documentation</a> if you'd like to learn more!</p>
+
+</article>
+  
+  
+</body>
+</html>

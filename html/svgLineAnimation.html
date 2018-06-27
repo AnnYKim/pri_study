@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+ 
+ <link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/styles/atelier-savanna-light.min.css">
+<script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+</head>
+<body>
+
+<article class="article">
+ 
+  <h1>SVG Line Animation</h1>
+  
+  <h2>SVG 속성을 활용한 애니메이션</h2>
+  <p>최근 열심히 웹 애니메이션을 찾아 공부하고 있습니다 :-9<br> 웹 애니메이션을 그리는 데는 CSS 애니메이션이나 JS 라이브러리 등이 있는데, 오늘은 SVG 속성을 활용해 선을 그리는 애니메이션을 살펴보고자 합니다.</p>
+  
+  <hr>
+  
+  <h2>SVG 살펴보기</h2>
+  <p>준비운동 느낌으로 SVG에 대해 간단히 살펴봅시다. <br>아무 SVG 파일을 편집기로 열어보면 코드가 좌르륵 써있는 걸 볼 수 있습니다.</p>
+  <pre><code>&lt;svg xmlns="http://www.w3.org/2000/svg" version="1.1"
+     width="300" height="200">
+  &lt;rect width="100%" height="100%" fill="red" />
+  &lt;circle cx="150" cy="100" r="80" fill="green" />
+  &lt;text x="150" y="125" font-size="60" text-anchor="middle" fill="white">SVG&lt;/text>
+&lt;/svg></code></pre>
+  <p>넵, 이게 바로 중요한 점입니다. <mark>SVG는 이미지가 아닌 문서</mark>라는 거죠!</p>
+  <p>JPG, PNG 등의 래스터 이미지는 크기가 명확하게 정의되어 있습니다. 정확히는 <i>가로 세로 비율이 정해져있습니다.</i> 그래서 강제로 다른 가로/세로 비율을 지정하면 이미지가 무참하게 깨져버립니다. 따라서 보통은 가로/세로 비율이 무너지지 않게 auto 등의 사이즈를 지정하죠.<br>
+  하지만 SVG 이미지는 <i>명확하게 정의된 크기가 필요 없습니다.</i></p>
+  <p>SVG는 캔버스 크기에 상관 없이 코드에 정의된 크기로 그려집니다. 대부분의 브라우저는 SVG를 뷰포트에 맞춰(100vw, 100vh) 화면에 꽉차게 그려냅니다. (IE는 100%, 150px)</p>
+
+  <hr>
+
+  <h2>SVG 라인 애니메이션</h2>
+  <p>이제 SVG의 라인을 움직이게 만들 차례입니다.<br>우선은 아무 SVG 파일을 준비합니다. 이때, (당연하게도) SVG는 stroke를 가지고 있어야 합니다. 우리는 이 stokre를 움직이게 만들 거니까요!</p>
+  
+  <p>이 SVG에 어떤 속성을 줘봅시다. <code>stroke-dasharray</code>라는 CSS 속성입니다. 이 속성을 적용시켜보면... <mark>선이 대쉬 형태가 됩니다.</mark> 값을 준만큼 간격을 가지게 되네요. 음, 그럼 path 길이가 100이라고 했을 때, dasharray가 50이라면 path는 절반만 보이겠군요. 만약 dasharray가 path의 길이와 같다면요? 이때는 path가 온전히 다 보입니다. path 길이만큼 간격을 갖기 때문에 path가 보이는 게 당연하죠.</p>
+  <p>한편 이때! <code>stroke-dashoffset</code>이란 속성을 줘봅니다. 이는 <mark>dasharray의 시작되는 위치를 설정합니다.</mark> 앗 그럼 dasharray가 path의 길이가 같을 때, dashoffset역시 path의 길이와 같게 한다면 어떨까요? 그러면 path는 보이지 않게 됩니다!</p>
+  <p>아래 이미지를 참고하면 느낌이 올...지도요?! :P</p>
+  <p>결론부터 말하죠. 라인을 그리기 위한 애니메이션은 아주 간단합니다: <mark><em>dashoffset을 path 길이와 똑같이 설정한 다음 0으로 줄입니다.</em></mark> 이는 CSS 애니메이션 또는 스크립트로 처리할 수 있습니다.</p>
+  
+  <h3>CSS 애니메이션</h3>
+  
+  <pre><code>.st1 {
+   stroke-dasharray: 711; /*이 값은 path의 길이와 동일합니다*/
+   stroke-dashoffset: 711;
+   animation: dash 1.3s linear alternate infinite;
+}
+
+@keyframes dash {
+  0% {
+    stroke-dashoffset: 711;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}</code></pre>
+
+  <?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 20.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="레이어_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
+	 y="0px" viewBox="0 0 570 360" xml:space="preserve" width="300px" height="200" style="border:1px solid #ccc;">
+<style type="text/css">
+	.st1{fill:none;stroke:#FBB03B;stroke-width:17;stroke-miterlimit:10;
+  stroke-dasharray: 710;}
+</style>
+<path class="st1" d="M159.4,289.8c0,0,29.8-227.7,51.8-207.6s127.3,316.4,135,169.8C353.9,105.3,314.9,59,314.9,59"/>
+</svg>
+
+<p>SASS와 결합하면 이런 식으로도 쓸 수 있죠! (each문 짱짱)</p>
+
+<p data-height="276" data-theme-id="0" data-slug-hash="XqPxQd" data-default-tab="html,result" data-user="nykim_" data-embed-version="2" data-pen-title="svg line animation with css animation" class="codepen">See the Pen <a href="https://codepen.io/nykim_/pen/XqPxQd/">svg line animation with css animation</a> by NY KIM (<a href="https://codepen.io/nykim_">@nykim_</a>) on <a href="https://codepen.io">CodePen</a>.</p>
+<script async src="https://static.codepen.io/assets/embed/ei.js"></script>
+
+<p>이렇게 CSS를 사용하면 쉽고 간단하게 애니메이션을 구현할 수 있습니다.<br> 단, 여기에는 꽤나 큰 단점이 있습니다. 바로 <i><em>IE에서 지원하지 않는다는 것</em></i>입니다. IE를 지원해야 한다면 스크립트를 쓰는 수밖에 없습니다ㅠ.ㅠ</p>
+
+<h3>자바스크립트</h3>
+<p>자바스크립트로 라인 애니메이션을 만드는 방법은 다음 참고 링크를 확인해 주세요! <a href="https://blog.tsumikiinc.com/article/20160229_alphabet-svg-line-animation.html">[참고 링크]</a><br>물론 직접 작성할 수도 있겠지만 꽤나 번거롭습니다. 이때 라이브러리 사용도 고려해볼 수 있겠습니다. 괄호 안의 수는 github 페이지의 star 개수입니다.</p>
+<ul class="list">
+  <li><a href="https://github.com/juliangarnier/anime">anime.js</a> (20,522)</li>
+  <li><a href="https://github.com/adobe-webplatform/Snap.svg">Snap.svg</a> (11,247)</li>
+  <li><a href="https://github.com/maxwellito/vivus">vivus.js</a> (10,222)</li>
+  <li><a href="https://github.com/ConnorAtherton/walkway">walkway</a> (4,271)</li>
+  <li><a href="https://github.com/camoconnell/lazy-line-painter">lazy line painter</a> (1,424)</li>
+</ul>
+<p>아래는 vivus.js로 애니메이션을 그린 모습입니다.</p>
+<p data-height="460" data-theme-id="0" data-slug-hash="vjzbje" data-default-tab="html,result" data-user="nykim_" data-embed-version="2" data-pen-title="vjzbje" class="codepen">See the Pen <a href="https://codepen.io/nykim_/pen/vjzbje/">vjzbje</a> by NY KIM (<a href="https://codepen.io/nykim_">@nykim_</a>) on <a href="https://codepen.io">CodePen</a>.</p>
+<script async src="https://static.codepen.io/assets/embed/ei.js"></script>
+
+<style>
+.st1 {
+ stroke-dasharray: 711;
+ stroke-dashoffset: 711;
+ animation: dash 1.3s linear alternate infinite;
+}
+
+@keyframes dash {
+  0% {
+    stroke-dashoffset: 711;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+  
+
+    
+</style>
+
+<!--
+
+<script src="js/jquery.min.js"></script>
+-->
+<script>
+  var path = document.querySelector ( '.nykim_y' ); 
+  console.log( path.getTotalLength() );
+</script>
+
+<!--
+
+<h2>SVG 스케일링</h2>
+<p>SVG는 겉으로 보기엔 그냥 이미지인데 이게 다 코드라니! 무척 당황스럽지만 계속 진행해보죠. SVG를 원하는 너비에 맞춰 높이를 조정하려면 어떻게 할까요?</p>
+<p><a href="https://css-tricks.com/scale-svg/" target="_blank">출처</a>에 따르면 다음의 *가지 방법을 사용할 수 있습니다.</p>
+<ol>
+  <li>
+    <strong class="title">Use image auto-sizing</strong>
+    <p>SVG가 viewBox를 가지고 있고, <code>&lt;img/></code> 태그 안에 쓰였을 때, 브라우저는 SVG를 비율에 맞춰 알아서 조절합니다.</p>
+    <p data-height="265" data-theme-id="0" data-slug-hash="MYbzaW" data-default-tab="html,result" data-user="AmeliaBR" data-embed-version="2" data-pen-title="Auto-Scaling SVG Images" class="codepen">See the Pen <a href="https://codepen.io/AmeliaBR/pen/MYbzaW/">Auto-Scaling SVG Images</a> by Amelia Bellamy-Royds (<a href="https://codepen.io/AmeliaBR">@AmeliaBR</a>) on <a href="https://codepen.io">CodePen</a>.</p>
+    <script async src="https://static.codepen.io/assets/embed/ei.js"></script>
+  </li>
+  <li>
+    <strong class="title">Use Background Images and the padding-bottom</strong>
+  </li>
+</ol>
+-->
+
+
+
+
+
+<!--
+
+
+
+
+<p>1. &lt;svg> 태그는 svg의 루트 요소입니다. svg는 XHTML 스펙을 따르고 있기 때문에 반드시 xmlns 속성으로 네임 스페이스를 지정해 줘야 합니다.<br>
+2. viersion은 SVG 스펙의 버전을 지정하는 건데 보통 1.1을 씁니다.<br>
+3. 전체 이미지 영역을 포함하는 사각형 &lt;rect />을 그려 배경을 빨간색으로 칠합니다.<br>
+4. 빨간색 직사각형의 중앙에 반경 80px의 원 &lt;circle/>을 그리고 배경을 초록색으로 칠합니다.<br>
+5. 텍스트 "SVG"를 그립니다. 각 문자의 내부는 흰색으로 채워집니다. 텍스트는 중심점이 되고자 하는 지점에 앵커를 설정하여 배치됩니다. 이 경우 중심점은 녹색 원의 중심에 일치해야 합니다. 글꼴 크기와 수직 위치를 미세 조정하여 심미적으로 뛰어난 최종 결과를 얻을 수 있습니다.</p>
+  
+-->
+   
+  
+</article>
+  
+  
+</body>
+</html>
