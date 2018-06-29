@@ -172,6 +172,11 @@ h3 {
   color: #383838;
 }
 
+	h4 {	
+	font-size: 16px;
+  color: #4d4d4d;
+	
+	}
 hr {
   
   width: 100%;
@@ -245,6 +250,10 @@ input {
 				display: inline-block;
 				font-weight: bold;
 			}
+			span {
+				line-height: 160% !important;
+				font-size: 15px;
+			}
 			
 			.list-text {
 				margin-top: 6px;
@@ -262,6 +271,7 @@ input {
 	ol.list > li {
 		list-style: decimal !important;
 		margin-left: 14px !important;
+		color: #3ab3c7;
 		&:before {
 			display: none;
 		}
@@ -332,11 +342,18 @@ input {
 		color: #c9c9c9;
 		font-size: 14px;
 		font-weight: 300;
+		margin-top: 10px;
 	}
 }
 
 .article-type-3 {
 	padding: 40px;
+	
+	&.font-16 {
+		p {
+			font-size: 16px !important;
+		}
+	}
 	
 	h2 {
 		&:before {

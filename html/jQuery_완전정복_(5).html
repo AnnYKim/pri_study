@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>jQuery</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/styles/atelier-savanna-light.min.css">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body>
+ 
+<div class="article-header">
+	<h1>jQuery - 이벤트 다루기</h1>
+	<p class="date">2018. 06. 29 Fri.</p>
+</div>
+<article class="article article-type-3 font-16"> 
+
+<h2>이벤트란?</h2>
+<p>웹 페이지에서 사용자가 마우스를 클릭하거나 키보드 키를 입력하면, 브라우저는 입력정보(클릭 위치, 클릭 버튼, 입력키 값 등)를 이벤트에 담아 알려 줍니다. 이러한 이벤트는 크게 4가지 종류로 분류할 수 있습니다.</p>
+<ul class="list">
+	<li><em>마우스 이벤트</em></li>
+	<li><em>키보드 이벤트</em></li>
+	<li><em>태그요소 고유 이벤트</em><span>: 엘리먼트마다 발생하는 고유 이벤트. 예를 들어 &lt;img> 태그요소의 경우 이미지가 모두 완료되면 load 이벤트를 발생시키며, &lt;input> 태그요소의 경우 입력한 정보가 바뀌면 change 이벤트를 발생시킵니다.</span></li>
+<li><em>사용자 정의 이벤트</em></li>
+</ul>
+<p>이벤트는 그냥 뿅하고 발생하는 게 아니라 일련의 흐름이 있습니다. 이벤트는 크게 3단계에 걸쳐 발생합니다. 바로 <em>캡쳐 단계 - 타깃 단계 - 버블링 단계</em>입니다. 이벤트 흐름은 오직 DOM 노드 객체를 따라 이동합니다.</p>
+<pre><code>&lt;!-- HTML -->
+
+&lt;html>
+   &lt;body>
+      &lt;div id="A1">
+         A1
+         &lt;div id="B1">
+            B1
+            &lt;div id="C1">
+               C1
+            &lt;/div>
+        &lt;/div>      
+    &lt;/div> 
+    &lt;div id="A2">
+         A2
+         &lt;div id="B2">
+            B2
+            &lt;div id="C2">
+               C2
+            &lt;/div>
+        &lt;/div>      
+    &lt;/div> 
+   &lt;body>
+&lt;/html></code></pre>
+<p>예제로 각 요소들의 캡쳐/타깃/버블 단계에 클릭 이벤트를 등록하고 콘솔에 <mark>eventPhase</mark> 프로퍼티를 찍어봅니다. eventPhase는 이벤트 단계를 알려주는 프로퍼티로, 1/2/3 중 하나를 리턴하는데 순서대로 캡처/타깃/버블 단계를 뜻합니다.</p>
+<p>여기서 B2를 클릭하면 어떠한 이벤트들이 발생할까요? 단순히 클릭 이벤트가 1번 발생했다고 생각하기 쉽지만, 콘솔을 살펴보면 무려 7번의 이벤트가 발생한다는 걸 알 수 있습니다(!)</p>
+<ol class="list">
+	<li><em>캡처 단계</em><span>: document - body - A2</span></li>
+	<li><em>타깃 단계</em><span>: B2</span></li>
+	<li><em>버블 단계</em><span>: A2 - body - document</span></li>
+</ol>
+<p>그럼 각 단계별 이벤트 흐름에 더 자세히 살펴봅시다.</p>
+
+<h3>캡처(Capture) 단계</h3>
+<p>가장 먼저 실행되는 단계입니다. 가장 최상위 노드인 <em>document에서 시작해 &lt;html> 태그와 &lt;body> 태그를 거쳐, 실제 이벤트를 발생시킨 노드 전</em>까지 흐릅니다. 이때 지나오며 만나는 노드 중 캡처 단계에 이벤트 리스너가 등록되어 있다면 이벤트 리스너가 실행됩니다.<br>위 예제에서는 document - body - A2 노드의 캡처 단계에 등록된 이벤트 리스너가 실행된 걸 볼 수 있죠. <small>(html에는 addEventListener가 걸리지 않던데 이유를 모르겠네요ㅠ.ㅠ)</small></p>
+<p>jQuery는 캡처 단계에 이벤트를 등록하는 기능을 제공하지 않습니다. 그래서 jQuery 내부에 들어있는 자바스크립트 DOM에 접근해 자바스크립트 방식으로 이벤트를 등록해야 합니다. 캡처 단계에 등록할면, <mark>addEventListner()</mark> 마지막 인자 값으로 <mark>true</mark>를 넣어주면 됩니다.</p>
+<pre><code>$("#div").get(0).addEventListner("click", function(){
+   alert("hello!");
+},true);</code></pre>
+<p>캡처 단계에 이벤트 리스너를 등록하는 경우는 드물지만, 가아끔 타깃/버블링 단계의 이벤트 실행 전에 처리해야할 사전 작업이 있거나, 타깃/버블링 단계 이벤트 처리를 제어하는 용도로 사용한다고 합니다.</p>
+
+<h3>타깃(Target) 단계</h3>
+<p>타깃 단계는 이벤트 흐름이 이벤트를 발생시킨 노드에 머무르는 단계를 말합니다. jQuery의 <mark>on()</mark> 메서드를 사용하면 기본적으로 타깃과 버블 단계에 등록됩니다. 자바스크립트로 처리하고 싶다면 <mark>addEventListner()</mark> 마지막 인자 값으로 <mark>false</mark>를 주면 됩니다.</p>
+
+<h3>버블(Bubble) 단계</h3>
+<p>버블 단계는 캡처 단계의 역순으로 흐릅니다. 저 위의 예제를 예로 든다면, 클릭된 B2 노드의 바로 상위 노드인 A2부터 시작해 body와 html 노드를 거쳐 document 객체로 흐르는 흐름이죠. 이 흐름을 타고 흐르다가 만나는 노드 중에 버블 단계에 등록된 이벤트 리스너가 있다면 해당 리스너가 실행되는 거고요.</p>
+<p>이벤트를 등록하는 방법은 타깃 단계와 동일합니다. 둘의 단계를 구분하고 싶다면 Event 객체의 <mark>eventPhase</mark> 속성을 사용하면 됩니다.</p>
+
+<h3>Event 객체</h3>
+<p>Event 객체는 이벤트를 발생시키는 곳에서 이벤트와 관련된 정보를 담아 외부로 보낼 때 사용하는 일종의 저장소입니다. Event 객체에는 이벤트와 관련된 기본 기능이 구현되어 있습니다. UIEvent는 Event객체로부터 상속받으며, MouseEvent는 UIEvent와 Event객체로부터 상속받아 기능을 사용할 수 있습니다. 그럼, Event 기능 가운데 반드시 알아야 할 핵심 프로퍼티와 메서드를 살펴봅시다.</p>
+<ul class="list">
+	<li><em>eventPhase</em><span>: 현재 이벤트 위치입니다. (1=캡처, 2=타깃, 3=버블)</span></li>
+	<li><em>type</em><span>: 발생한 이벤트 이름입니다.</span></li>
+	<li><em>target</em><span>: 실제로 이벤트를 발생시킨 대상입니다.</span></li>
+	<li><em>currentTarget</em><span>: 캡처링 단계와 버블링 단계를 거치면서 만나는 객체에 이벤트 리스너가 등록되어 있어 실행되는 경우, 리스너를 가지고 있는 대상을 가리킵니다. 이벤트 단계에 따라 target과 currentTarget은 같을 수도 다를 수도 있습니다.</span></li>
+	<li><em>cancelabe</em><span>: 특정 이벤트 발생 후 실행되는 기본 행동을 취소할 수 있는지를 나타냅니다. 이 프로퍼티 값이 true라면 <mark>preventDefault()</mark>로 기본 행동이 실행되지 않게 취소할 수 있습니다.</span></li>
+	<li><em>bubbles</em><span>: 버블링이 발생하는지 여부를 나타냅니다. 이 프로퍼티 값이 true라면 <mark>stopPropagation()</mark>으로 버블링을 도중에 멈출 수 있습니다.</span></li>
+</ul>
+	
+	<hr>
+	
+	<h2>이벤트 등록/제거하기</h2>
+	<h3>$대상.on("이벤트이름", 이벤트리스너)</h3>
+	<p>뭣도 모르고 썼던(...) <mark>on()</mark>메서드로 이벤트를 손쉽게 등록할 수 있습니다.</p>
+	<pre><code>$(document).ready(function(){
+   $("ul li").on("click",function(){
+      alert( $(this).html() );
+   });
+});</code></pre>
+<p>여기서 이벤트 리스너의 this는 이벤트를 발생시킨 자바스크립트 노드 객체를 가리키며, jQuery 기능을 사용하기 위해 $()함수를 이용해 자바스크립트 노드 객체를 jQuery 객체로 변경해 사용합니다. 여기서 중요한 점!! 위 구문이 실행되면 이벤트 리스너 '하나'가 등록되는 게 아니라, 각각의 &lt;li> 태그 노드에 이벤트가 등록된다는 점입니다. 즉, 아래와 같이 이벤트가 등록되는 거죠.</p>
+<pre><code>$("ul li").each(function(){
+   $(this).on("click",function(){
+      alert( $(this).html );
+   });
+});</code></pre>
+
+<h3>$대상.단축이벤트(이벤트리스너)</h3>
+<p>blur, change, load, click, scroll ... 등은 단축 이벤트 메서드를 사용해 간결하게 처리할 수 있습니다. 근데 왜 굳이 <mark>on()</mark> 메서드를 썼냐구요? 그건... 이따 알아봅시다ㅎㅎㅎ</p>
+
+<h3>$대상.off("이벤트이름", 이벤트리스너)</h3>
+<p>on의 반대는 off죠! <mark>off()</mark> 메서드를 사용하면 등록한 이벤트를 제거할 수 있습니다. 특정 이벤트에 대한 리스너를 제거하고 싶다면 리스너 명을 써주고, 특정 이벤트에 걸린 모든 이벤트 리스너를 제거하고 싶다면 이벤트 이름만 써주면 됩니다. 노드에 걸린 모든 이벤트를 없애버리고 싶다면?! 그냥 <mark>off()</mark> 메서드만 호출해줍니다.</p>
+
+<h3>$대상.one("이벤트이름", 이벤트리스너)</h3>
+<p>이벤트를 딱 한 번만! 실행하고 싶다면 <mark>one()</mark> 메서드를 사용합니다. 여기에 등록된 이벤트 리스너는 한 번만 실행되고 자동으로 제거됩니다.</p>
+
+<h3>event.preventDefault()</h3>
+<p>이벤트 객체의 cancelable 프로퍼티가 true일 때, 이 메서드로 기본 행동을 취소시킬 수 있습니다. 보통 &lt;a> 태그에 많이 쓰죠.</p>
+
+<h3>event.stropPropagation()</h3>
+<p>이벤트 객체의 bubbles 프로퍼티가 true일 때, 이 메서드로 버블링을 막을 수 있습니다.</p>
+<p>그럼 버블링을 활용하는 방법을 알아보죠. 우선, 하나의 이벤트 리스너로 여러 이벤트를 처리하는 방법입니다. 우리가 아까 $("ul li")에 <mark>on()</mark> 메서드로 이벤트를 등록하면 각 &lt;li>마다 이벤트 리스너가 등록된다고 했죠? 여기에다 버블링을 활용해 봅시다.</p>
+	<pre><code>$(document).ready(function(){
+   $("ul").on("click", function(e){
+     console.log("테스트용=", e.target.tagName);
+     
+     //실제 이벤트를 발생한 노드(target 속성)가 &lt;li> 태그인 경우에만 처리
+      if(e.target.tagName == "LI"){
+      	alert($(e.target).html());
+      }
+   });
+});</code></pre>
+<p>위 예제에서 li를 클릭하면, document - html - body - ul을 거쳐 캡처 이벤트가 발생하고 해당 li에 타깃 이벤트가 발생한 다음, 다시 ul부터 버블링 이벤트가 발생합니다. 그런데 어! ul에는 cilck 이벤트가 걸려 있어요. 그래서 등록된 이벤트 리스너가 실행됩니다. 그 이벤트 리스너 내부에는, 이벤트 객체의 target(이벤트를 발생시킨 노드 객체) 속성을 활용해 이벤트를 발생시킨 객체가 li일 때만 메시지를 띄우도록 해놨죠.</p>
+	<pre><code>$(document).ready(function(){
+   $("ul").on("click", "li", function(e){
+     console.log("테스트용=", e.target.tagName);
+     
+     //실제 이벤트를 발생한 노드(target 속성)가 &lt;li> 태그인 경우에만 처리
+     alert($(e.target).html());
+   });
+});</code></pre>
+<p>jQuery의 기능을 사용하면 더더더 쉽습니다. <mark>on()</mark> 메서드의 두 번째 인자에 이벤트 대상이 되는 선택자를 넣어 호출하기만 하면 되거든요.</p>
+<p>이번엔 라이브 이벤트를 배워봅시다. 아직 만들어져 있지 않은 노드에게서 발생하는 이벤트를 처리하는 기능이죠. <br>아래 예제는 버튼을 누르면 li가 계속해서 추가되는 코드입니다.</p>
+<pre><code>$(document).ready(function(){
+   var $menu = $("ul.menu");
+   var count = 0;
+
+   $("#add").click(function(){
+      count++;
+      var $newItem = $("&lt;li>new"+count+"&lt;/li>");
+      
+      $menu.append($newItem);
+   });
+
+   $("li").on("click",function(){
+      console.log( $(this).html() );
+   });
+});</code></pre>
+<p>코드를 실행시킨 뒤, #add 버튼을 눌러 새로운 li를 만든 다음 눌러봅니다. 그럼... 콘솔에 아무것도 안 찍힙니다...! (두두둥) 이유는 이벤트를 등록하는 시점에 신규 메뉴 항목은 존재하지 않아 이벤트가 등록되지 않기 때문입니다. 이걸 해결하는 가장 쉬운 건, 신규 아이템을 만든 뒤 이벤트를 등록해주는 거죠.</p>
+<pre><code>$(document).ready(function(){
+   var $menu = $("ul.menu");
+   var count = 0;
+
+   $("#add").click(function(){
+      count++;
+      var $newItem = $("&lt;li>new"+count+"&lt;/li>");
+      
+      $newItem.on("click",function(){
+         console.log( $(this).html() );
+      });
+      
+      $menu.append($newItem);
+   });
+
+   $("li").on("click",function(){
+      console.log( $(this).html() );
+   });
+});</code></pre>
+<p>하지만 이 방법은 신규 아이템이 생길 때마다 거기다 이벤트 리스너를 계속 추가해야 합니다. 좀 더 효과적인 방법을 위해 버블링을 써봅시다. 아래쪽 클릭 이벤트만 살짝쿵 수정하면 됩니다.</p>
+<pre><code>$(document).ready(function(){
+   var $menu = $("ul.menu");
+   var count = 0;
+
+   $("#add").click(function(){
+      count++;
+      var $newItem = $("&lt;li>new"+count+"&lt;/li>");
+      
+      $menu.append($newItem);
+   });
+
+   $("ul").on("click", "li", function(){
+      console.log( $(this).html() );
+   });
+});</code></pre>
+
+<h3>$대상.trigger("이벤트이름")</h3>
+<p>수동으로 이벤트를 발생시킬 때 <mark>trigger()</mark> 메서드를 사용합니다.</p>
+
+<hr>
+
+
+<h2>사용자 정의 이벤트 만들기</h2>
+<p>jQuery를 이용하면 다음과 같이 2가지 방법을 활용해 사용자 정의 이벤트를 만들 수 있습니다.</p>
+<pre><code>/* 방법 1 */
+var event = jQuery.Event("이벤트이름");
+[event.데이터1 = 값;
+event.데이터2 = 값;
+...]
+$대상.trigger(event);
+
+/* 방법 2 */
+var event = jQuery.Event("이벤트이름");
+$대상.trigger(event[, 데이터1 = 값, 데이터2 = 값, ...]);</code></pre>
+<p>방법1과 방법2 모두 처리 순서는 동일합니다.</p>
+<ol class="list">
+	<li><span>이벤트 객체 생성</span></li>
+	<li><span>이벤트 발생 시 리스너에 보낼 데이터 생성</span></li>
+	<li><span>이벤트 발생</span></li>
+</ol>
+<p>위의 예제 코드를 바탕으로 사용자 정의 이벤트를 정의해 봅시다.</p>
+<pre><code>$(document).ready(function(){
+   var $menu = $("ul.menu");
+   var count = 0;
+
+   $("#add").click(function(){
+      count++;
+      var $newItem = $("&lt;li>new"+count+"&lt;/li>");
+      
+      $menu.append($newItem);
+      
+      //[1-1] jQuery.Event() 메서드로 addItem이란 이름의 사용자 정의 이벤트 생성
+      var event = jQuery.Event("addItem");
+      
+      //[1-2] 이벤트 데이터 생성
+      event.item = $newItem; //신규로 생성한 메뉴 아이템을 담고..
+      event.itemName = $newItem.text() //신규 아이템의 텍스트 정보도 담고..
+      event.itemLength = $menu.children().length; //현재 메뉴 개수도 이벤트에 담아줍니다.
+      
+      //[1-3] 이벤트 발생
+      $menu.trigger(event);
+      
+   });
+
+  //[2] 사용자 정의 이벤트인 addItem의 이벤트 리스너를 등록
+   $menu.on("addItem", function(e){
+      $(".output").prepend("&lt;p>추가 아이템:" + e.itemName + ", 아이템 개수: " + e.itemLength + "&lt;/p>");
+      //이때 [1-2]의 이벤트에 담은 데이터는 이벤트 리스너의 첫 번째 매개변수인 e에 담겨 넘어옵니다.
+   });
+});</code></pre>
+<p>한편, 방법2를 사용하면 아래와 같이 처리할 수도 있습니다.</p>
+<pre><code>$(document).ready(function(){
+   var $menu = $("ul.menu");
+   var count = 0;
+
+   $("#add").click(function(){
+      count++;
+      var $newItem = $("&lt;li>new"+count+"&lt;/li>");
+      
+      $menu.append($newItem);
+      
+      //[1-1] jQuery.Event() 메서드로 addItem이란 이름의 사용자 정의 이벤트 생성
+      var event = jQuery.Event("addItem");
+      
+      //[1-2] 이벤트 데이터 생성
+      var data = [$newItem, $newItem.text(), $menu.children().length];
+      //방법2에서는 이벤트 리스너로 넘길 데이터를 이벤트 객체로 포장하는 게 아니라, trigger() 메서드의 매개변수로 넘긴다는 점이 다릅니다. 따라서 보낼 데이터를 배열로 만들어줍니다.
+      
+      //[1-3] 이벤트 발생
+      $menu.trigger(event, data);
+      
+   });
+
+   //[2] 사용자 정의 이벤트인 addItem의 이벤트 리스너를 등록
+   $menu.on("addItem", function(e, $item, itemName, itemLength){
+      $(".output").prepend("&lt;p>추가 아이템:" + itemName + ", 아이템 개수: " + itemLength + "&lt;/p>");
+      //이때 [1-3]에서 trigger()에 담아 보낸 배열 데이터는 이벤트 리스너의 두 번째 매개변수부터 차례대로 담기게 됩니다.
+   });
+});</code></pre>
+
+
+<hr>
+
+<h2>mouseover / mouseenter 이해하기</h2>
+<p>간!단!설!명!을 하자면 아래와 같습니다.</p>
+<ul class="list">
+	<li>
+		<em>over &amp; out</em><span>: <i>자식 엘리먼트에게도 반응</i>. 자식에게 over/out하면 "나한테도 over/out한 거나 마찬가지인데!"하고 반응한다.</span>
+	</li>
+	<li>
+		<em>enter &amp; leave</em><span>: <i>자식 엘리먼트에게 무반응</i>. 자식에게 enter/leave해도 "뭐, 자식한테만 enter/leave했네.."하고 신경 끈다(...)</span>
+	</li>
+</ul>
+<p>코드펜에 예제를 올려놨으니 살펴보면 되겠습니다.</p>
+<p data-height="660" data-theme-id="0" data-slug-hash="GGPpXR" data-default-tab="js,result" data-user="nykim_" data-embed-version="2" data-pen-title="mouseover vs. mouseenter" class="codepen">See the Pen <a href="https://codepen.io/nykim_/pen/GGPpXR/">mouseover vs. mouseenter</a> by NY KIM (<a href="https://codepen.io/nykim_">@nykim_</a>) on <a href="https://codepen.io">CodePen</a>.</p>
+<script async src="https://static.codepen.io/assets/embed/ei.js"></script>
+<p>제일 쉬운 건 그냥 enter/leave 쓰는 거(...)입니다. 이벤트가 겹쳐 발생할 위험을 줄일 수 있거든요.</p>
+<!--
+<p>부모와 자식 사이를 마우스로 왔다갔다 해보면 몇 가지 사실을 깨달을 수(?) 있습니다.</p>
+<p>우선, parent -> child로 마우스를 살포시 옮겨보면, parent에게 out과 over 이벤트가 일어납니다. 어라, out과 leave가 아니고요? 넵. out은 child도 독립적 주체로 보고 있습니다. 그래서 자식 요소에게 마우스를 두면 '아 날 떠났구나'하고 out 이벤트를 발생시킵니다. 하지만 leave는 자식도 품어요(?) 그래서 자식 요소에게 마우스를 둬도 '아직 날 떠난 건 아니네'라며 leave 이벤트를 발생시키지 않습니다.<br>leave가 일어나지 않는 이유는 알겠는데, 그럼 over는 왜 일어날까요? over역시 자식을 독립적으로 봅니다. 그래서 자식요소에게 마우스가 가버리면, 내 영역 위에 마우스가 새로 올라온 것으로 판단해서 over다!!하고 난리치는 거죠. 반대로 enter는 자식도 품는다고 했죠? 그래서 마우스가 자식에게 있으면 여전히 마우스는 자기에게 있는 걸로 보기 때문에 굳이 enter 이벤트를 발생시키지 않습니다.</p>
+-->
+
+<hr>
+
+<h2>탭메뉴와 탭패널 만들기</h2>
+<p>그럼 예제를 풀어보죠. 책 292p ~ 313p에 해당하는 내용입니다 :)</p>
+<p>이 예제를 풀기 위해 해야하는 일은 크게 3가지겠네요. 탭메뉴를 누르면 해당 메뉴가 활성화되고, 탭패널에 인덱스 값에 맞는 정보가 출력되고, 탭메뉴와 탭패널의 인덱스값을 연동시켜주면 됩니다. 아주 간단하네요!</p>
+
+<h3>탭메뉴 활성화 기능</h3>
+<p>탭메뉴를 클릭하면 해당 메뉴에게 클래스를 줍니다.</p>
+<pre><code>function tabMenu(selector){
+  
+   // [1] 지역변수 선언
+   var $tabMenu = null;
+   var $menuItems = null;
+   var $selectMenuItem = null;
+   
+   // [2] 요소 초기화
+   function init(){
+      $tabMenu = $(selector);  //인자로 들어온 대상
+      $menuItems = $tabMenu.find("li");  //$tabMenu의 li
+   }
+   
+   // [3] 이벤트 등록
+   function initEvent(){
+      $menuItems.on("click",function(){ //메뉴 아이템(li)가 클릭 되면
+         setSelectItem($(this)); //setSelectItem이라는 함수 실행
+      });
+   }
+   
+   // [4] 선택한 메뉴 활성화
+   function setSelectItem($item){
+      if($selectMenuItem){ //선택된 메뉴 아이템이 있다면
+      	 $selectMenuItem.removeClass("select"); //클래스 제거
+      }
+      $selectMenuItem = $item; //인자로 넘어온 대상에게
+      $selectMenuItem.addClass("select"); //클래스 추가
+   }
+   
+   //[5] 초기 함수 호출
+   init();
+   initEvent();
+   
+}
+
+$(document).on("ready",function(){
+   tabMenu("#tabMenu"); 
+});</code></pre>
+
+<h3>탭패널 기능 구현</h3>
+<pre><code>function tabPanel(selector){
+ 
+   //[1] 지역변수 선언
+   var $selectPanel = null;
+   var $selectPanel = null;
+   
+   // [2] 요소 초기화
+   function init(){
+      $tabPanels = $(selector).find(".content");  //인자로 들어온 대상의 content 부분
+   }
+   
+   // [3] 패널에 클래스 부여하는 함수 선언
+   function setSelectPanelAt(index){
+      if($selectPanel){ //선택된 패널 아이템이 있다면
+      	 $selectPanel.removeClass("select"); //클래스 제거
+      }
+      $selectPanel = $selectPanel.eq(index); //인자로 넘어온 인덱스와 맞는 패널에게
+      $selectPanel.addClass("select"); //클래스 추가
+   }
+   
+   //[5] 초기 함수 호출
+   initEvent();
+   
+   //[6] 선택 기능 리턴(*)
+   return {
+      setSelectPanelAt:setSelectPanelAt
+   }
+   
+}
+
+$(document).on("ready",function(){
+   //탭패널 기능 호출
+   var tabPanel01 = tabPanel(".tab-contents");
+   //1번째 탭패널 활성화
+   tabPanel01.setSelectPanelAt(1); 
+});</code></pre>
+<p>위 코드에서 선택 기능 리턴 부분을 살펴봅시다. tabPanel() 함수 외부에서 n번째에 해당하는 탭패널 내용을 활성화하려면 setSelectPanelAt() 함수를 호출해야 하는데, 이건 tabPanel() <i>함수 내부의 '중첩 함수'이기 때문에 외부에서 호출할 수 없습니다.</i> 따라서 tabPanel() 함수의 리턴값으로 setSelectPanelAt() 함수를 리터럴 객체에 담아 리턴값으로 넘겨주는 것입니다.</p>
+
+
+<h3>탭 메뉴와 탭 패널 연동</h3>
+<p>독립적으로 구현한 특정 기능을 연동해야 하는데, 이때 3가지 방법 중 하나를 사용하면 됩니다.</p>
+<p><strong>1. 탭 메뉴에서 탭 패널에 직접 접근</strong> 이 방법은 탭메뉴가 눌리는 경우, 탭패널의 선택 기능이 담긴 객체에 직접 접근하는 방법입니다.</p>
+<pre><code>var tabPanel01 = null; //[1] 지역변수였던 tabPanel01을 전역변수로 바꾸고
+
+function tabMenu(selector){
+   ...
+   
+   function setSelectItem($item){
+      if($selectMenuItem){
+      	 $selectMenuItem.removeClass("select");
+      }
+      $selectMenuItem = $item;
+      $selectMenuItem.addClass("select");
+      
+      //[2] index에 맞는 탭패널 내용 활성화하는 기능을 추가해줍니다
+      tabPanel01 = setSelectPanelAt($item.index());
+   }
+}
+
+$(document).on("ready",function(){
+   tabPanel01 = tabPanel(".tab-contents"); //[3] 전역변수가 됐으므로 var을 제거합니다
+   /* tabPanel01.setSelectPanelAt(1); */ //[4] 테스트용 구문을 주석처리 해줍니다
+});</code></pre>
+<p>이 방법은 쉽긴 하지만 탭메뉴 안에서 탭패널 기능을 사용하는 구조로 변경했기 때문에, 탭메뉴는 더 이상 독립적이지 않게 됩니다. 프로그래밍에서는 이러한 의존관계는 가능한 약한 편이 좋다고 하는데요, 만약 탭패널 기능이 변경되면 탭메뉴도 변경해줘야 하기 때문이죠.</p>
+<p><strong>2. 콜백함수를 활용한 연동처리</strong>그럼 탭메뉴 내부에서 처리하는 게 아니라, 탭메뉴 밖에서 선택한 탭메뉴의 탭패널 내용을 활성화시켜보죠. 조금 전의 코드를 아래와 같이 바꿉니다.</p>
+<pre><code>var tabPanel01 = null;
+
+function tabMenu(selector, callback){ //[1] tabMenu()함수에 콜백함수를 받을 매개변수 값을 추가합니다
+   ...
+   
+   function setSelectItem($item){
+      if($selectMenuItem){
+      	 $selectMenuItem.removeClass("select");
+      }
+      $selectMenuItem = $item;
+      $selectMenuItem.addClass("select");
+      
+      //[2] 콜백함수가 있는 경우 콜백함수를 실행시킵니다
+      if(callback){
+      	callback($item.index()); //이때 index값을 매개변수로 넘겨줍니다.
+      }
+   }
+}
+
+$(document).on("ready",function(){
+   tabMenu("#tabMenu", function(index){ //[3] 콜백함수 구문을 추가합니다. 이때 index값을 넘겨받습니다.
+      tabPanel01.setSelectPanelAt(index);
+   });
+});
+</code></pre>
+<p><strong>3. 사용자 정의 이벤트를 활용한 연동처리</strong>이번에는 사용자 정의 이벤트를 활용해 볼 차례입니다.</p>
+<pre><code>var tabPanel01 = null;
+
+function tabMenu(selector){
+   ...
+   
+   function setSelectItem($item){
+      if($selectMenuItem){
+      	 $selectMenuItem.removeClass("select");
+      }
+      $selectMenuItem = $item;
+      $selectMenuItem.addClass("select");
+      
+      
+      //[1] 사용자 정의 이벤트 발생 기능을 전담할 함수 정의
+      function dispatchSelectEvent() {
+      	 // 사용자 정의 이벤트 객체 생성
+      	 var event = jQuery.Event("tabSelect");
+      	 // 이벤트에 담아 보낼 데이터 연결
+      	 event.selectIndex = $selectMenuItem.index();
+      	 event.$selectItem = $selectMenuItem;
+         // 이벤트 발생시킴
+         $tabMenu.trigger(event);
+      }
+      
+      //[2] 탭 메뉴가 선택될 때마다 함수 호출하여 이벤트 발생
+      dispatchSelectEvent();
+      
+      //[3] index 값으로 탭메뉴를 선택할 수 있는 기능 추가
+      function setSelectItemAt(index) {
+      	 var $item = $menuItems.eq(index);
+      	 setSelectItem($item);
+      } 
+
+			//[4] 함수 외부에서 $tabMenu에 이벤트 등록할 수 있도록 리터럴로 묶어 리턴
+		  // 추가로 tabMenu() 함수 외부에서 탭메뉴를 인덱스 값으로 선택할 수 있게 setSelectItemAt()도 묶어줍니다.
+			return {
+					$tabMenu : $tabMenu,
+					setSelectItemAt : setSelectItemAt
+			}
+   }
+}
+
+$(document).on("ready",function(){
+   // [5] 이벤트를 걸기 위해 tabMenu() 함수의 리턴값을 변수에 담아 줍니다
+   var tabMenu1 = tabMenu("#tabMenu1"); 
+   // [6] tabSelect 이벤트가 발생하는 $tabMenu에게 이벤트 리스너를 등록해 줍니다
+   tabMenu1.$tabMenu.on("tabSelect", function(e) { 
+      tabPanel1.setSelectPanel(e.selectIndex);
+   }) 
+   // [7]이벤트 객체에 포장해 보내오는 선택 메뉴 아이템의 인덱스 값을 매개변수 값으로 탭패널 기능인 setSelectPanel() 함수를 호출해 줍니다.
+   tabPanel1 = tabPanel(".tab-contents");
+});
+</code></pre>
+<p>완성된 전체 코드는 다음과 같습니다.</p>
+<pre><code>
+        var tabPanel1 = null;
+        $(document).ready(function() {
+            // 탭메뉴 코드가 동작할 수 있도록 tabMenu() 함수 호출
+            var tabMenu1 = tabMenu("#tabMenu1");
+            tabMenu1.$tabMenu.on("tabSelect", function(e) {
+                tabPanel1.setSelectPanel(e.selectIndex);
+            })
+            // 탭패널 기능 호출
+            tabPanel1 = tabPanel(".tab-contents");
+
+        });
+
+        // 탭메뉴 기능 구현하기
+
+        function tabMenu(selector) {
+
+            var $tabMenu = null;
+            var $menuItems = null;
+            // 선택 한 탭메뉴를 저장할 변수
+            var $selectMenuItem = null;
+
+            // 요소 초기화, tabMenu() 함수 내부에서 사용할 공통 데이터는 모두 이곳에 작성해주세요.
+            function init() {
+                $tabMenu = $(selector);
+                $menuItems = $tabMenu.find("li");
+            }
+
+            // 이벤트 등록은 모두 이곳에 작성해주세요.
+            function initEvent() {
+                $menuItems.click(function() {
+                    setSelectItem($(this));
+                });
+            }
+
+            // 선택 메뉴 아이템 만들기
+            function setSelectItem($item) {
+                if ($selectMenuItem) {
+                    $selectMenuItem.removeClass("select");
+                }
+                $selectMenuItem = $item;
+                $selectMenuItem.addClass("select");
+
+                // 이벤트 발생
+                dispatchSelectEvent();
+
+            }
+
+            // index번째 메뉴 아이템 선택
+            function setSelectItemAt(index) {
+                var $item = $menuItems.eq(index);
+                setSelectItem($item);
+            }
+
+            // 이벤트 발생
+            function dispatchSelectEvent() {
+                // 이벤트 객체 생성
+                var event = jQuery.Event("tabSelect");
+                // 이벤트에 담아 보낼 데이터 연결
+                event.selectIndex = $selectMenuItem.index();
+                event.$selectItem = $selectMenuItem;
+
+                $tabMenu.trigger(event);
+            }
+
+            init();
+            initEvent();
+
+            return {
+                $tabMenu : $tabMenu,
+                setSelectItemAt : setSelectItemAt
+            }
+        }
+
+        // 탭패널 기능 구현하기
+        function tabPanel(selector) {
+            var $tabPanels = null;
+            var $selectPanel = null;
+            function init(selector) {
+                $tabPanels = $(selector).find(".content");
+            }
+
+            function setSelectPanel(index) {
+                if ($selectPanel) {
+                    $selectPanel.removeClass("select");
+                }
+                $selectPanel = $tabPanels.eq(index);
+                $selectPanel.addClass("select");
+            }
+
+            init(selector);
+
+            // 선택기능 리턴
+            return {
+                setSelectPanel : setSelectPanel
+            }
+        }</code></pre>
+</article>
+
+
+</body>
+</html>

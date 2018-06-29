@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>jQuery</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/styles/atelier-savanna-light.min.css">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body>
+ 
+<div class="article-header">
+	<h1>jQuery - 노드 다루기 (생성, 추가, 삭제, 이동)</h1>
+	<p class="date">2018. 06. 29 Fri.</p>
+</div>
+<article class="article article-type-3 font-16"> 
+
+<h2>노드 생성</h2>
+<h3>var $신규노드 = $("신규DOM")</h3>
+<p>jQuery에서 노드를 생성하는 일반적인 방법은 그냥 $()함수를 쓰는 거죠. 생성하고자 하는 태그 정보를 문자열로 만들어 매개변수에 넣어주기만 하면 뿅하고 신규 노드가 만들어집니다.</p>
+<pre><code>var $new = $("&lt;li>new item&lt;li>");
+console.log($new.get(0));</code></pre>
+<p>위 코드에서 <mark>var $new = $("&lt;li>new item&lt;li>");</mark> 구문을 실행하면 jQuery 객체가 생깁니다. 해당 jQuery 객체에는 find(), get), click() 과 같은 다양한 기능들이 들어 있습니다. 또, 객체 내부에는 HTMLLiElement DOM 객체가 포함되어 있고요.</p>
+<p>다시 한 번 설명하자면, $() 함수 내부에서는 매개변수로 받은 태그 노드 정보를 파싱해 태그와 1:1 대응하는 HTMLLiElement 객체를 생성하는 작업이 일어납니다. 이렇게 만들어진 자바스크립트 DOM 객체를 좀더 쉽게 사용할 수 있도록 jQuery 객체를 만들어 반환해 줍니다. <br>만약 똑같은 작업을 자바스크립트 DOM만 가지고 만든다면 다음처럼 복잡한 작업을 거쳐야 합니다.</p>
+<pre><code>var newItem = document.createElement("li"); //신규 노드 생성
+var newText = document.createTextNode("new item"); //신규 노드의 텍스트 노드 생성
+newItem.appendChild(newText); //텍스트 노드를 신규 노드에 추가
+console.log(newItem);</code></pre>
+<p>jQuery가 정말 빠르고 간편하다는 걸 보여주는 예제네요. 허나! 이렇게 노드를 생성하는 기능도 jQuery가 직접 하는 게 아니라, 모두 자바스크립트 DOM 기능을 사용하고 있다는 거죠. jQuery는 복잡한 작업을 대신 해주는 대행업자 같은 겁니다.</p>
+
+<hr>
+
+<h2>노드 추가/이동하기</h2>
+<p>노드를 추가하거나 이동하려면 다음과 같은 메서드를 사용합니다. 추가(이동)할 노드는 문자열여도되고, jQuery객체여도 상관 없습니다.</p>
+
+<h3>$부모노드.prepend($추가노드) / $추가노드.prependTo($부모노드)</h3>
+<p>신규 노드를 특정 노드의 <em>첫 번째 자식으로 추가(이동)</em>하고 싶다면, <mark>prepend()</mark> 또는 <mark>prependTo()</mark> 메서드를 사용하면 됩니다. 둘의 기능은 똑같습니다.</p>
+
+<h3>$부모노드.append($추가노드) / $추가노드.appendTo($부모노드)</h3>
+<p>신규 노드를 특정 노드의 <em>마지막 자식으로 추가(이동)</em>할 때 사용합니다.</p>
+
+<h3>$기준노드.before($추가노드) / $추가노드.insertBefore($기준노드) </h3>
+<p>신규 노드를 특정 노드의 <em>이전 형제 노드로 추가(이동)</em>하는 경우 사용합니다.</p>
+
+<h3>$기준노드.after($추가노드) / $추가노드.insertAfter($기준노드) </h3>
+<p>신규 노드를 특정 노드의 <em>다음 형제 노드로 추가(이동)</em>하는 경우 사용합니다.</p>
+
+<hr>
+
+<h2>노드 삭제</h2>
+<h3>$대상.remove()</h3>
+<p>특정 노드를 삭제하고 싶다면 <mark>remove()</mark> 메서드를 사용합니다. 만약 조건을 걸고 싶다면 선택자를 조정하면 됩니다. 예를 들어, <mark>$("ul li:odd").remove()</mark>는 홀수인 li만 지워버리겠죠. <mark>$("ul").children().remove()</mark>와 같이 조합(?)해서 쓰면 모든 자식 노드들을 지워버릴 수도 있습니다.</p>
+
+
+<hr>
+
+<h2>노드 내용 읽기 및 변경</h2>
+<h3>$대상.html() / $대상.text()</h3>
+<p>위 메서드를 사용하면 노드 내용을 확인할 수 있습니다. 차이점이라면 <mark>html()</mark> 메서드는 마크업 내용까지 포함하고, <mark>text()</mark> 메서드는 마크업 내용을 제외한 텍스트 노드의 내용만을 리턴한다는 거죠. 주의할 점은, 이 메서드 결과는 자바스크립트 DOM 객체가 아닌 <em>단순한 문자열</em>이라는 것입니다.<br>노드 내용을 수정하고 싶다면 매개변수로 수정할 내용을 넣어주면 됩니다. 내용을 지워버리고 싶다면 ""과 같이 빈 문자열을 적용해주면 됩니다.</p>
+
+<hr>
+
+<h2>노드의 속성 다루기</h2>
+<p>이번에는 노드 속성을 다뤄봅시다. 여기서 말하는 속성은, <mark>&lt;a href="https://nykim.net"/></mark>의 <mark>href</mark> 등을 의미합니다. 이러한 속성을 <em>일반 속성</em>이라 부르며, <mark>data-value</mark>와 같이 필요에 의해 만든 속성을 <em>사용자 정의 속성</em>이라 합니다.</p>
+
+<h3>$대상.attr("속성이름") / $대상.data("속성이름")</h3>
+<p>데이터를 읽어오려면 해당 key값(속성이름)만 매개변수로 넘깁니다. 이때 key값은 <em>문자열</em>이여야 합니다. key를 생략하고 <mark>data()</mark>로 호출하면, 해당 엘리먼트에 저장된 모든 data들이 JSON 형식으로 리턴됩니다.</p>
+<pre><code>&lt;!-- HTML -->
+&lt;a href="https://nykim.net" class="myTag" data-name="마이 태그" data-desc="하이퍼링크 텍스트" data-number="101">nykim.net&lt;/a>
+
+/*jQuery*/
+$("a").data(); //출력값: Object { desc: "하이퍼링크 텍스", name: "마이 태그", number: 101 }
+$("a").data("name"); //출력값: '마이 태그'
+$("a").attr("class"); //출력값: 'myTag'
+$("a").attr("name"); //출력값: undefined
+</code></pre>
+<p>참고로 data에 저장되는 value값은 JS가 알아서 형변환을 해줍니다(!) 문자열이든, 숫자든, 불린이든 말이죠!</p>
+<pre><code>$("a").data("number") === 101; //출력값: True</code></pre>
+<p>속성을 부여하고 싶다면 두 개의 매개변수를 주면 됩니다. data가 저장될 key값과 value입니다.</p>
+<pre><code>$("p").data("name", "p태그");</code></pre>
+<p>그밖에 <mark>&lt;p data-favorite-food="치킨">존좋&lt;p></mark>와 같이 데이터 이름이 snake-case문법이라면, camelCase 문법으로 읽어올 수 있습니다. <mark>$("p").data("favoriteFood");</mark>와 같이 말이죠. </p>
+
+</article>
+
+
+</body>
+</html>

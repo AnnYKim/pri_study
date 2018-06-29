@@ -10,8 +10,11 @@
 </head>
 <body>
  
-<article class="article"> 
-<h1>jQuery - 노드 다루기</h1>
+<div class="article-header">
+	<h1>jQuery - 노드 다루기</h1>
+	<p class="date">2018. 06. 29 Fri.</p>
+</div>
+<article class="article article-type-3 font-16"> 
 
 <h2>노드 찾기</h2>
 <p>jQuery에서는 id 이름, 태그 이름, 클래스 이름, 속성을 통해 노드를 찾을 수 있습니다. 이는 CSS의 셀렉팅과 거의 같습니다. 따라서 속성으로 노드를 찾는 것만 복습하고 넘어가죠 :9</p>
@@ -42,7 +45,7 @@
 
 <h2>찾은 노드 다루기</h2>
 <h3>$대상.length</h3>
-<p>length 프로퍼티를 이용하면 jQuery 객체 내부에 들어있는 논드 개수를 구할 수 있습니다.</p>
+<p>length 프로퍼티를 이용하면 jQuery 객체 내부에 들어있는 노드 개수를 구할 수 있습니다.</p>
 
 <h3>$대상.eq(index)</h3>
 <p>eq() 메서드를 이용하면 찾은 노드의 n번째에 해당하는 노드에 접근할 수 있습니다.</p>
@@ -73,7 +76,7 @@ li_1.style.border="1px solid #333";</code></pre>
 	console.log(this);
 	$(this).addClass("on");
 });</code></pre>
-<p>위 코드의 익명함수 내부의 this는 뭘 의미할까요? 이는 $("ul.menu li")라는 jQuery 객체 내부에 들어있는 <i>index 번째에 해당하는 자바스크립트 DOM</i>을 의미합니다.<br>그럼 $(this)는 뭐가 다를까요? 앞서 살펴본 것처럼 $는 jQuery 함수이며, 매개변수로 받은 태그 노드 정보를 파싱해 태그와 1:! 대응하는 HTMLElement 객체를 jQuery 객체로 포장해 <1></1>리턴한다고 배웠습니다. 즉, $(this)는 this를 jQuery 객체로 만든 것 뿐입니다. 왜냐면 우린 이걸 가지고 addClass() 등의 메서드를 쓸 건데, 이건 일반 자바스크립트 DOM에는 없는 기능이잖아요? 따라서 $() 함수를 이용해 일반 자바스크립트 DOM 객체를 감싼 jQuery의 인스턴스로 만들어 addClass() 같은 메서드를 사용해야 합니다. 일종의 형변환 같은 거죠. 정리하자면 $(this)는 <em>this라는 DOM 객체를 쉽게 다루기 위해 this를 jQuery 객체로 만든 것</em>입니다.</p>
+<p>위 코드의 익명함수 내부의 this는 뭘 의미할까요? 이는 $("ul.menu li")라는 jQuery 객체 내부에 들어있는 <i>index 번째에 해당하는 자바스크립트 DOM</i>을 의미합니다.<br>그럼 $(this)는 뭐가 다를까요? 앞서 살펴본 것처럼 $는 jQuery 함수이며, 매개변수로 받은 태그 노드 정보를 파싱해 태그와 1:1 대응하는 HTMLElement 객체를 jQuery 객체로 포장해 리턴한다고 배웠습니다. 즉, $(this)는 this를 jQuery 객체로 만든 것 뿐입니다. 왜냐면 우린 이걸 가지고 addClass() 등의 메서드를 쓸 건데, 이건 일반 자바스크립트 DOM에는 없는 기능이잖아요? 따라서 $() 함수를 이용해 일반 자바스크립트 DOM 객체를 감싼 jQuery의 인스턴스로 만들어 addClass() 같은 메서드를 사용해야 합니다. 일종의 형변환 같은 거죠. 정리하자면 $(this)는 <em>this라는 DOM 객체를 쉽게 다루기 위해 this를 jQuery 객체로 만든 것</em>입니다.</p>
 
 <h3>$대상.filter("선택자")</h3>
 <p>찾은 노드 중에서 특정 노드만을 걸러내고 싶을 땐 filter() 메서드를 사용합니다. 이때, filter() 메서드가 찾는 대상은 오직 현재 찾은 노드이며, 현재 찾은 노드의 자손이나 부모는 포함하지 않습니다.</p>
@@ -95,8 +98,99 @@ li_1.style.border="1px solid #333";</code></pre>
 $menuLink.click(function(){
 	alert( $$menuLink.index(this) );
 });</code></pre>
-<p>즉, &lt;a> 태그 객체를 갖고 있는 jQuery 객체에게 클릭한 DOM 객체가 몇 번째 인덱스인지 물어보면 된는 거죠. 참고로 this 대신 $(this)를 써도 됩니다 :-9</p>
+<p>즉, &lt;a> 태그 객체를 갖고 있는 jQuery 객체에게 클릭한 DOM 객체가 몇 번째 인덱스인지 물어보면 된는 거죠. 참고로 <mark>this</mark> 대신 <mark>$(this)</mark>를 써도 됩니다 :-9</p>
+
+<hr>
+
+<h2>자식 노드 찾기</h2>
+<h3>$대상.children() / $대상.find()</h3>
+<p><mark>children()</mark>메서드는 특정 노드의 바로 하위에 위치한 <em>모든 자식 노드 중 태그 노드만을 찾는 메서드</em>입니다. 여기에 자손 노드는 포함되지 않습니다.자식 노드를 구하는 메서드 중에는 <mark>contents()</mark>도 있습니다. 요녀석은 태그 노드는 물론 텍스트 노드, 주석 노드 등 <em>모든 자식 노드를 찾아준다</em>는 점이 다릅니다.
+<br>매개변수로 "선택자"를 넣어주면 해당 선택자에 해당하는 특정 자식 노드만 찾을 수도 있습니다. <mark>$(".main").children(".nykim")</mark>는 main 클래스를 가진 부모 노드의 자식 노드 중 nykim이라는 클래스를 가진 노드만 찾아주겠죠!</p>
+<p>한편, <mark>find()</mark> 메서드는 하위 자식 노드뿐만 아니라 모든 자손 노드를 찾아줍니다.</p>
+
+<h3>첫 번째 자식 노드 찾기</h3>
+<p>첫 번째 자식 노드를 찾는 방법은 4가지 정도 있습니다.</p>
+
+<ul class="list">
+	<li>
+		<em>$대상.children(":first")</em>
+		<span>: children() 메서드에 ":first" 선택자를 추가하여 호출</span>
+	</li>
+	<li>
+		<em>$대상.children().first()</em>
+		<span>: children() 메서드를 이용해 자식 노드를 구한 뒤 first() 메서드를 사용</span>
+	</li>
+	<li>
+		<em>$대상.children().eq(0)</em>
+		<span>: children() 메서드로 구한 자식 노드 중 index가 0번째인 자식을 구함</span>
+	</li>
+	<li>
+		<em>$대상.children(":eq(0)")</em>
+		<span>: children() 메서드에 ":eq(0)" 선택자를 추가하여 호출</span>
+	</li>
+</ul>
+
+<p>그럼 뭐가 제일 효율적일까요?! 이때는 <em>선택자를 이용한 방법</em>이 더 효율적입니다. 전에 언급했듯, 메서드를 여러 번 호출하는 것은 영 조치가 안습미다. 우리는 jQuery 기능을 쓸 때 $만 쓰면 뚝딱 끝나지만, 코드 내부에는 루프를 도는 로직이 들어 있기 때문에 가급적 <em>jQuery 기능 호출을 줄이는 것</em>이 좋다고 했죠. 따라서 <mark>children(":first")</mark>와 같이 쓰는 걸 추천합니다.</p>
+<p>그럼 번외편(?)으로 아래 코드를 효율적으로 바꿔봅시다.</p>
+<pre><code>/*기존 방법*/
+var $menu = $("ul.menu");
+$menu.children(":first").css("width", "50px");
+$menu.children(":last").css("width","100px");</code></pre>
+<pre><code>/*보다 효율적인 방법*/
+var $menu = $("ul.menu");
+var $children = $menu.children();
+$children.first().css("width", "50px");
+$children.last().css("width","100px");</code></pre>
+
+
+<h3>마지막 자식 노드 찾기</h3>
+<p>요래조래 다양한 방법이 있지만 자주 쓰는 건 역시 선택자를 이용한 방법입니다.</p>
+
+<ul class="list">
+	<li>
+		<em>$대상.children(":last")</em>
+	</li>
+	<li>
+		<em>$대상.children().last()</em>
+	</li>
+	<li>
+		<em>$대상.children().eq(-1)</em>
+	</li>
+	<li>
+		<em>$대상.children(":eq(-1)")</em>
+	</li>
+	<li>
+		<em>$대상.children().eq($대상.children().length-1)</em>
+	</li>
+</ul>
+
+<h3>n번째 자식 노드 찾기</h3>
+<p>얘도 마찬가지로 가급적 메서드 호출을 줄일 수 있는 방법으로 이용합시다.</p>
+<ul class="list">
+	<li>
+		<em>$대상.children().eq(n)</em>
+	</li>
+	<li>
+		<em>$대상.children(":eq(n)")</em>
+	</li>
+</ul>
+
+<hr>
+
+<h2>부모 노드 찾기</h2>
+<h3>$대상.parent() / $대상.parents(["선택자"])</h3>
+<p><mark>parent()</mark>메서드는 바로 상위 노드인 부모 노드만을, <mark>parents()</mark>메서드는 모든 조상 노드를 찾습니다. 괄호 안에 매개변수로 선택자를 넣으면 해당 선택자에 해당하는 노드만 찾아주는 것도 똑같습니다.</p>
+
+<hr>
+
+<h2>형제 노드 찾기</h2>
+<h3>$대상.prev() / $대상.prevAll(["선택자"])</h3>
+<p>특정 노드의 이전 형제 노드 또는 모든 이전 형제 노드를 찾습니다. <mark>prev()</mark>를 두 번 쓰면 이전의 이전 형제(...)에게 접근할 수 있죠.</p>
+<h3>$대상.next() / $대상.nextAll(["선택자"])</h3>
+<p><mark>next()</mark>메서드는 <mark>prev()</mark> 메서드와 반대되는 메서드로, 특정 노드의 바로 다음에 있는 형제 노드를 찾고 싶을 때 사용합니다.</p>
+
 </article>
+
 
 </body>
 </html>
